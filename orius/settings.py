@@ -1,9 +1,15 @@
 """
 Orius settings module.
 """
-from decouple import config
+import os
 
 __version__ = '0.0.1'
 
-TOKEN = config('TOKEN', '')
-SETTINGS_MODULE = config('SETTINGS_MODULE', 'common')
+TOKEN = os.environ.get('TOKEN', '')
+
+MONGO_CONFIG = {
+    'MONGO_HOST': os.environ.get('MONGO_HOST', 'mongodb://localhost'),
+    'MONGO_PORT': os.environ.get('MONGO_PORT', '27017'),
+    'MONGO_DATABASE': os.environ.get('MONGO_DATABASE'),
+}
+
