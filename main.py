@@ -1,6 +1,6 @@
 import logging
 import sys
-from orius.settings import TOKEN, SETTINGS_MODULE, __version__
+from orius.settings import TOKEN, __version__
 from core.commands import client
 
 logging.basicConfig(level='INFO')
