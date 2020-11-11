@@ -1,0 +1,5 @@
+discord==1.0.1
+
+python-decouple==3.1
+docker-compose==1.26.2
+
