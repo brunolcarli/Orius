@@ -65,3 +65,50 @@ Run the bot through Makefile:
 ```
 $ make run
 ```
+
+## Docker
+
+Install docker-compose through `pip`:
+
+```
+$ pip install docker-compose
+```
+
+Create a environment file called `orius_env` at `orius/environment/orius_env` and put the environment variables with your own values on it, based on the template available at `orius/environment/docker_template`.
+
+Compile and run the docker containers with docker-compose:
+
+```
+$ docker-compose build
+$ docker compose up
+```
+
+Note: If ypu want the container to run background run `docker-compose up -d`
+
+You mus create a user and password for your mongo client user. Find the container hash id with:
+
+```
+$ docker ps -a | grep orius
+```
+
+It shooul return something like:
+
+```
+69a8b08fbb58  orius:devel  "make run"    50 minutes ago      Up 8 minutes      orius_container                                                                                                
+13a1fcf31874  mongo   "docker-entrypoint.s…"   58 minutes ago      Up 8 minutes           27017/tcp          orius_mongo_1
+```
+
+The one youre looking for is the hash for `orius_mongo`, in this case it is `13a1fcf31874`.
+
+Call a mongo shell from docker container:
+
+```
+$ docker exec -ti 13a1fcf31874 mongo
+```
+
+Create a new user with root role for your access:
+
+```
+> use admin
+> db.createUser({user: "username", pwd: "password", roles: ["root"]})
+```
