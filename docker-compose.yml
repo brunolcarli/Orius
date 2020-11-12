@@ -2,8 +2,10 @@ version: '3'
 
 services:
   orius_db:
-    image: orius/mongodb
+    image: mongo:4.0.8
     container_name: orius_mongo
+    restart: unless-stopped
+    command: mongod --auth
     env_file: orius/environment/orius_env
 
   orius:
@@ -15,7 +17,7 @@ services:
     env_file: orius/environment/orius_env
     volumes:
       - .:/app
-      - static_data:/app/static
+      - mongodbdata:/data/db
 
 volumes:
   static_data:
