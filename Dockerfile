@@ -8,7 +8,7 @@ WORKDIR /usr/src/code
 
 ENV PYTHONPATH /usr/src/code
 
-COPY orion/requirements/common.txt .
+COPY orius/requirements/common.txt .
 RUN pip3 install -r common.txt
 
 RUN apk del gcc libc-dev git libffi-dev openssl-dev
@@ -17,3 +17,4 @@ RUN apk del gcc libc-dev git libffi-dev openssl-dev
 COPY . .
 
 ENV PYTHONUNBUFFERED 1
+ENV NAME orius
