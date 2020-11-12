@@ -1,6 +1,8 @@
 from pymongo import MongoClient
 from orius.settings import MONGO_CONFIG
 from core.util import next_lv, level_up
+import logging
+log = logging.getLogger()
 
 
 def get_db():
@@ -8,9 +10,12 @@ def get_db():
     Returns a mongo client connection cursor for database defined on
     settings.
     """
-    client = MongoClient(
-        f'{MONGO_CONFIG["MONGO_HOST"]}:{MONGO_CONFIG["MONGO_PORT"]}'
-    )
+    user = MONGO_CONFIG['MONGO_USER']
+    pwd = MONGO_CONFIG['MONGO_PASS']
+    host = MONGO_CONFIG['MONGO_HOST']
+    port = MONGO_CONFIG['MONGO_PORT']
+
+    client = MongoClient(f'mongodb://{user}:{pwd}@{host}:{port}')
 
     return client[MONGO_CONFIG['MONGO_DATABASE']]
 
