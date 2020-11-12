@@ -83,9 +83,9 @@ $ docker-compose build
 $ docker compose up
 ```
 
-Note: If ypu want the container to run background run `docker-compose up -d`
+Note: If you want the container to run background run `docker-compose up -d`
 
-You mus create a user and password for your mongo client user. Find the container hash id with:
+You must create a user and password for your mongo client user. Find the container hash id with:
 
 ```
 $ docker ps -a | grep orius
