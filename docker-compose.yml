@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  orius_db:
+    image: orius/mongodb
+    container_name: orius_mongo
+    env_file: orius/environment/orius_env
+
+  orius:
+    build: .
+    image: orius:devel
+    restart: on-failure
+    container_name: orius_container
+    command: make run
+    env_file: orius/environment/orius_env
+    volumes:
+      - .:/app
+      - static_data:/app/static
+
+volumes:
+  static_data:
