@@ -1,3 +1,4 @@
+from core.character.skill import Skill
 
 
 class Player:
@@ -15,11 +16,26 @@ class Player:
         self.skill_points = attributes.get('skill_points')
         self.skills = attributes.get('skills')
 
-    def __str__(self):
+    def __repr__(self):
         return f'{self.name} Lv: {self.lv}'
 
     def is_alive(self):
         return True if self.hp > 0 else False
+
+    def list_skills(self):
+        return [Skill(**skill) for skill in self.skills]
+
+    def get_skill(self, skill_name):
+        skill = [skill for skill in self.skills if skill.get('name') == skill_name]
+        return next(Skill(**skill))
+
+    def learn_skill(self, skill):
+        if len(self.skills) >= 4:
+            return {'learned': False, 'log': 'Cant learn any more skills.'}
+
+        # TODO adicionar skill no banco de dados
+        self.skills.append(skill)
+        return {'learned': True, 'log': f'learned {Skill(**skill)}'}
 
     def get_damage(self, damage):
         self.hp -= damage
@@ -33,4 +49,18 @@ class Player:
         pass
 
     def attack(self, skill, target):
-        return target.hit(skill)
+        if skill.cost > self.mp:
+            return {
+                'hit': False,
+                'target_alive': True,
+                'log': 'Not enough move points!'
+            }
+
+        self.mp -= skill.cost
+
+        return {
+            'hit': True,
+            'target_alive': target.hit(skill),
+            'log': f'Hit target with {skill}'
+        }
+
