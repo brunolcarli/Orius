@@ -61,13 +61,14 @@ async def status(ctx):
     player = Player(**member, name=user.name)
     embed.add_field(name='Name', value=player.name, inline=True)
     embed.add_field(name='Lv', value=player.lv, inline=True)
-    embed.add_field(name='HP', value=player.hp, inline=True)
-    embed.add_field(name='MP', value=player.mp, inline=True)
+    embed.add_field(name='HP', value=f'{player.current_hp}/{player.max_hp}', inline=True)
+    embed.add_field(name='MP', value=f'{player.current_mp}/{player.max_mp}', inline=True)
     embed.add_field(name='Strenght', value=f':crossed_swords: : {player.strenght}', inline=True)
     embed.add_field(name='Defense', value=f':shield: : {player.defense}', inline=True)
     embed.add_field(name='Magic', value=f':magic_wand: : {player.magic}', inline=True)
     embed.add_field(name='Speed', value=f':person_running:  : {player.speed}', inline=True)
     embed.add_field(name='Nex Lv', value=player.next_lv, inline=True)
+    embed.add_field(name='Skill pts', value=player.skill_points, inline=False)
 
     return await ctx.send('', embed=embed)
 
