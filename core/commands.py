@@ -70,3 +70,41 @@ async def status(ctx):
     embed.add_field(name='Nex Lv', value=player.next_lv, inline=True)
 
     return await ctx.send('', embed=embed)
+
+@client.command(aliases=['sk'])
+async def skills(ctx, arg='list'):
+    """
+    Lists skills learned or setted for this member.
+    Accepted params: [list]|[set]
+    default param: [list]
+    """
+    valid_args = ['set', 'list']
+    user = ctx.message.author
+    member = next(get_member(str(ctx.message.guild.id), str(user.id)))
+    if not member:
+        return await ctx.send('Member not found!')
+
+    if arg not in valid_args:
+        return await ctx.send(
+            'Invalid argument. Accept only: **set** or **list**'
+        )
+
+    avatar_url = f'{ctx.message.author.avatar_url.BASE}/avatars/{user.id}/{user.avatar}'
+    player = Player(**member, name=user.name)
+    options = {
+        'list': player.list_skills(),
+        'set': player.get_skillset()
+    }
+    skills = options[arg]
+    if not skills:
+        return await ctx.send('User has no skills for this option!')
+
+    skills = '\n'.join(str(skill) for skill in skills)
+
+    embed = discord.Embed(color=0x1E1E1E, type='rich')
+    embed.set_thumbnail(url=avatar_url)
+
+    embed.add_field(name='Name', value=player.name, inline=False)
+    embed.add_field(name='Skills', value=skills, inline=False)
+
+    return await ctx.send('', embed=embed)

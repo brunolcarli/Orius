@@ -9,7 +9,7 @@ class Skill:
         self.effect = data.get('effect')
 
     def __repr__(self):
-        return f'{self.name} Move cost: {self.cost} Power: {self.power}'
+        return f'{self.name} | Cost: {self.cost} | Power: {self.power}'
 
 
 # hardcoded available skills

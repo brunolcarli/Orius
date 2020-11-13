@@ -14,7 +14,8 @@ class Player:
         self.next_lv = attributes.get('next_lv')
         self.messages = attributes.get('messages')
         self.skill_points = attributes.get('skill_points')
-        self.skills = attributes.get('skills')
+        self.learned_skills = attributes.get('learned_skills')
+        self.skillset = attributes.get('skillset')
 
     def __repr__(self):
         return f'{self.name} Lv: {self.lv}'
@@ -23,7 +24,10 @@ class Player:
         return True if self.hp > 0 else False
 
     def list_skills(self):
-        return [Skill(**skill) for skill in self.skills]
+        return [Skill(**skill) for skill in self.learned_skills]
+
+    def get_skillset(self):
+        return [Skill(**skill) for skill in self.skillset]
 
     def get_skill(self, skill_name):
         skill = [skill for skill in self.skills if skill.get('name') == skill_name]
