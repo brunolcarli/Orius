@@ -4,6 +4,7 @@ General utilities and tools.
 from math import ceil
 from random import randint
 
+
 def next_lv(level):
     """
     Calculates the amount Exp needed to level up based on the actual level.
@@ -22,8 +23,10 @@ def level_up(member):
 
             member['hp'] += randint(10, 50)
             member['mp'] += randint(5, 25)
-            member['atk'] += randint(0, 2)
-            member['def'] += randint(0, 2)
-            member['mag'] += randint(0, 2)
+            member['strenght'] += randint(0, 2)
+            member['defense'] += randint(0, 2)
+            member['magic'] += randint(0, 2)
+            member['speed'] += randint(0, 1)
+            member['skill_points'] += 2
 
     return member
