@@ -41,7 +41,8 @@ def get_or_create_member(cursor):
     member['defense'] = 10
     member['magic'] = 10
     member['speed'] = 8
-    member['skills'] = []
+    member['skillset'] = []
+    member['learned_skills'] = []
     member['skill_points'] = 0
     member['next_lv'] = next_lv(member['lv'])
 
