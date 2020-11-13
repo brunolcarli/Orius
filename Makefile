@@ -4,3 +4,7 @@ install:
 
 run:
 	python3 main.py
+
+container:
+	docker-compose build
+	docker-compose up
