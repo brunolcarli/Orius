@@ -77,3 +77,12 @@ def update_member(collection_name, member_id):
     print(query)
 
     return member
+
+
+def get_member(collection_name, member_id):
+    """
+    Returns a member data from database.
+    """
+    collection = get_db()[collection_name]
+
+    return collection.find({'member': member_id})
