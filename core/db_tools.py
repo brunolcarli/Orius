@@ -35,8 +35,10 @@ def get_or_create_member(cursor):
 
     # Define default attributes
     member['lv'] = 1
-    member['hp'] = 200
-    member['mp'] = 100
+    member['max_hp'] = 200
+    member['max_mp'] = 100
+    member['current_hp'] = 200
+    member['current_mp'] = 100
     member['strenght'] = 10
     member['defense'] = 10
     member['magic'] = 10

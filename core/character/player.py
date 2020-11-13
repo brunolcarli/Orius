@@ -5,8 +5,10 @@ class Player:
     def __init__(self, **attributes):
         self.lv = attributes.get('lv')
         self.name = attributes.get('name')
-        self.hp = attributes.get('hp')
-        self.mp = attributes.get('mp')
+        self.max_hp = attributes.get('max_hp')
+        self.max_mp = attributes.get('max_mp')
+        self.current_hp = attributes.get('current_hp')
+        self.current_mp = attributes.get('current_mp')
         self.strenght = attributes.get('strenght')
         self.defense = attributes.get('defense')
         self.magic = attributes.get('magic')
