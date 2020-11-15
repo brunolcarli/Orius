@@ -50,6 +50,7 @@ def get_or_create_member(cursor):
     member['kills'] = 0
     member['deaths'] = 0
     member['resets'] = 0
+    member['delay'] = 0
     member['next_lv'] = next_lv(member['lv'])
 
     return member
