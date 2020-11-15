@@ -200,3 +200,70 @@ async def unset_skill(ctx, skill_name=None):
 
     return await ctx.send(f'Unassigned skill {skill_name} to the skillset!')
 
+
+@client.command(aliases=['add', 'addst'])
+async def add_stat(ctx, stat=None, value=''):
+    """
+    Increment an attribut stat spending your available skill points!
+    An attribute and a value must be specified.
+        -> Example: o:add_stat magic 1
+    """
+    print('++++++++++')
+    print(value)
+    print('++++++++++')
+    if not stat and not value:
+        return await ctx.send(
+            'Must specify attribute and value:\n`o:add magic 1`'
+        )
+
+    # value must be a integer number
+    if not value.isdigit():
+        return await ctx.send('The skill point value must be a integer number!')
+    value = int(value)
+
+    # stat must be valid
+    valid_stats = set(['strenght', 'magic', 'defense', 'speed', 'hp', 'mp',])
+    if stat not in valid_stats:
+        return await ctx.send(
+            f'Invalid stat attribute {stat} \
+            \nValid stats are {" ".join(f"`{s}`" for s in list(valid_stats))}'
+        )
+
+    # get member from database
+    user = ctx.message.author
+    member = next(get_member(str(ctx.message.guild.id), str(user.id)))
+    if not member:
+        return await ctx.send('Member not found!')
+
+    # member must have skill points AND the value specified
+    skill_points = member.get('skill_points')
+    if not skill_points or value > skill_points:
+        return await ctx.send('Not enough skill points.')
+
+    # update member stats
+    if stat == 'hp':
+        stat = 'max_hp'
+        member['skill_points'] -= value
+        value = value *10
+        member[stat] += value
+
+    elif stat == 'mp':
+        stat = 'max_mp'
+        member['skill_points'] -= value
+        value = value * 10
+        member[stat] += value
+
+    else:
+        member[stat] += value
+        member['skill_points'] -= value
+
+    update = update_member(
+        collection_name=str(ctx.message.guild.id),
+        member_id=str(user.id),
+        data=member
+    )
+    log.info(update_member)
+
+    return await ctx.send(
+        f'Updated {stat} in {value}!\nSkill points left: {member["skill_points"]}'
+    )
