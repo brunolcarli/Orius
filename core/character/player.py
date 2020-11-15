@@ -35,14 +35,6 @@ class Player:
         skill = [skill for skill in self.skills if skill.get('name') == skill_name]
         return next(Skill(**skill))
 
-    def learn_skill(self, skill):
-        if len(self.skills) >= 4:
-            return {'learned': False, 'log': 'Cant learn any more skills.'}
-
-        # TODO adicionar skill no banco de dados
-        self.skills.append(skill)
-        return {'learned': True, 'log': f'learned {Skill(**skill)}'}
-
     def get_damage(self, damage):
         self.hp -= damage
 
