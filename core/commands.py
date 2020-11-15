@@ -40,8 +40,13 @@ async def on_message(message):
     # Give priority for bot prefixed commands
     await client.process_commands(message)
 
-    x = update_member(str(message.guild.id), str(message.author.id))
-    print(x)
+    # Increments member message count
+    update = update_member(
+        collection_name=str(message.guild.id),
+        member_id=str(message.author.id),
+        data={'$inc': {'messages': 1}}
+    )
+    log.info(update)
 
 
 @client.command(aliases=['st'])
@@ -71,6 +76,7 @@ async def status(ctx):
     embed.add_field(name='Skill pts', value=player.skill_points, inline=False)
 
     return await ctx.send('', embed=embed)
+
 
 @client.command(aliases=['sk'])
 async def skills(ctx, arg='list'):
@@ -109,3 +115,88 @@ async def skills(ctx, arg='list'):
     embed.add_field(name='Skills', value=skills, inline=False)
 
     return await ctx.send('', embed=embed)
+
+
+@client.command(aliases=['ssk', 'assign', 'set'])
+async def set_skill(ctx, skill_name=None):
+    """
+    Sets a skill to the skillset.
+    A skill name must be specified.
+        -> Example o:set_skill flame
+    """
+    if not skill_name:
+        return await ctx.send('Must specify a skillname!')
+
+    user = ctx.message.author
+    member = next(get_member(str(ctx.message.guild.id), str(user.id)))
+    if not member:
+        return await ctx.send('Member not found!')
+
+    # Player must have the skill before ssign it
+    skills = member['learned_skills']
+    skill_to_set = next(
+        iter([skill for skill in skills if skill.get('name') == skill_name]),
+        None
+    )
+    if not skill_to_set:
+        return await ctx.send(f'Unknow skill {skill_name}')
+
+    skillset = member['skillset']
+    if len(skillset) >= 4:
+        return await ctx.send('You can only hold up to 4 skills at once.')
+
+    # Cant assign same skill twice
+    if any([skill for skill in skillset if skill.get('name') == skill_name]):
+        return await ctx.send('This skill is already assigned!')
+
+    member['skillset'].append(skill_to_set)
+    update = update_member(
+        collection_name=str(ctx.message.guild.id),
+        member_id=str(user.id),
+        data=member
+    )
+    log.info(update_member)
+
+    return await ctx.send(f'Assigned skill {skill_name} to the skillset!')
+
+
+@client.command(aliases=['un', 'unassign', 'unset'])
+async def unset_skill(ctx, skill_name=None):
+    """
+    Unassign a skill from the skillset.
+    A skill name must be specified.
+        -> Example o:unset_skill smash
+    """
+    if not skill_name:
+        return await ctx.send('Must specify a skillname!')
+
+    user = ctx.message.author
+    member = next(get_member(str(ctx.message.guild.id), str(user.id)))
+    if not member:
+        return await ctx.send('Member not found!')
+
+    # Player must have the skill before ssign it
+    skillset = member['skillset']
+    skill_to_unset = next(
+        iter([skill for skill in skillset if skill.get('name') == skill_name]),
+        None
+    )
+    if not skill_to_unset:
+        return await ctx.send(f'Unknow skill {skill_name}')
+
+    if len(skillset) <= 1:
+        return await ctx.send('You cant hold less than 1 skill.')
+
+    for skill in member['skillset']:
+        if skill['name'] == skill_name:
+            member['skillset'].remove(skill)
+
+    update = update_member(
+        collection_name=str(ctx.message.guild.id),
+        member_id=str(user.id),
+        data=member
+    )
+    log.info(update_member)
+
+    return await ctx.send(f'Unassigned skill {skill_name} to the skillset!')
+

@@ -51,12 +51,12 @@ def get_or_create_member(cursor):
     return member
 
 
-def update_member(collection_name, member_id):
+def update_member(collection_name, member_id, data):
     collection = get_db()[collection_name]
 
     query = collection.update(
         {'member': member_id},
-        {'$inc': {'messages': 1}},
+        data,
         upsert=True
     )
     # TODO trocar por log
