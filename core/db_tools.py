@@ -45,6 +45,7 @@ def get_or_create_member(cursor):
     member['speed'] = 8
     member['skillset'] = []
     member['learned_skills'] = []
+    member['items'] = []
     member['skill_points'] = 0
     member['kills'] = 0
     member['deaths'] = 0
