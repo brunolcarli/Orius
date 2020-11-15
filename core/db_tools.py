@@ -55,6 +55,13 @@ def get_or_create_member(cursor):
 
 
 def update_member(collection_name, member_id, data):
+    """
+    Updates a member data on database.
+    param : collection_name : <str>
+    param : member_id : <str>
+    param : data: <dict>
+    return: <pymongo.cursor.Cursor>
+    """
     collection = get_db()[collection_name]
 
     query = collection.update(
@@ -62,8 +69,7 @@ def update_member(collection_name, member_id, data):
         data,
         upsert=True
     )
-    # TODO trocar por log
-    print(query)
+    log.info('Created memeber with id %s', member_id)
 
     # refreshs the query to get the member
     refresh = collection.find({'member': member_id})
@@ -78,8 +84,7 @@ def update_member(collection_name, member_id, data):
         {'member': member_id},
         member,
     )
-    # TODO trocar por log
-    print(query)
+    log.info('Updated member %s', member_id)
 
     return member
 
@@ -87,6 +92,9 @@ def update_member(collection_name, member_id, data):
 def get_member(collection_name, member_id):
     """
     Returns a member data from database.
+    param : collection_name : <str>
+    param : member_id : <str>
+    retur: <pymongo.cursor.Cursor>
     """
     collection = get_db()[collection_name]
 
