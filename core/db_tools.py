@@ -74,7 +74,7 @@ def update_member(collection_name, member_id, data):
         data,
         upsert=True
     )
-    log.info('Created memeber with id %s', member_id)
+    log.info('Identified member with id %s', member_id)
 
     # refreshs the query to get the member
     refresh = collection.find({'member': member_id})
@@ -104,3 +104,12 @@ def get_member(collection_name, member_id):
     collection = get_db()[collection_name]
 
     return collection.find({'member': member_id})
+
+
+def get_members(collection_name):
+    """
+    Returns all members from a collection.
+    """
+    collection = get_db()[collection_name]
+
+    return collection.find()

@@ -1,14 +1,41 @@
 import logging
-from datetime import datetime
 import discord
 from discord.ext import commands, tasks
 from orius.settings import __version__
 
-from core.db_tools import update_member, get_member, NotFoundOnDb
+from core.db_tools import update_member, get_member, NotFoundOnDb, get_members
 from core.character.player import Player
 
 client = commands.Bot(command_prefix='o:')
 log = logging.getLogger()
+
+
+class GuildTracker(commands.Cog):
+    """
+    Loop for healing players time to time.
+    """
+    def __init__(self):
+        self.guilds = client.guilds
+        self.healing_loop.start()
+
+    @tasks.loop(seconds=3600)
+    async def healing_loop(self):
+        """ Tracking task """
+        log.info('tracking...')
+        for guild in self.guilds:
+            log.info(guild.name)
+            members = get_members(str(guild.id))
+
+            for member in members:
+                member['current_hp'] += member['max_hp'] * .1
+                if member['current_hp'] > member['max_hp']:
+                    member['current_hp'] = member['max_hp']
+
+                member['current_mp'] += member['max_mp'] * .1
+                if member['current_mp'] > member['max_mp']:
+                    member['current_mp'] = member['max_mp']
+
+                update_member(str(guild.id), str(member['member']), data=member)
 
 
 @client.event
@@ -16,6 +43,8 @@ async def on_ready():
     """
     Logs info message when initialized!
     """
+    guilds = client.guilds
+    client.add_cog(GuildTracker())
     log.info('Orius ready and standing by!')
 
 
