@@ -1,9 +1,10 @@
 import logging
+from datetime import datetime
 import discord
 from discord.ext import commands, tasks
 from orius.settings import __version__
 
-from core.db_tools import update_member, get_member
+from core.db_tools import update_member, get_member, NotFoundOnDb
 from core.character.player import Player
 
 client = commands.Bot(command_prefix='o:')
@@ -64,16 +65,18 @@ async def status(ctx):
         return await ctx.send('Member not found!')
 
     player = Player(**member, name=user.name)
-    embed.add_field(name='Name', value=player.name, inline=True)
+    embed.add_field(name='Name', value=player.name, inline=False)
     embed.add_field(name='Lv', value=player.lv, inline=True)
-    embed.add_field(name='HP', value=f'{player.current_hp}/{player.max_hp}', inline=True)
-    embed.add_field(name='MP', value=f'{player.current_mp}/{player.max_mp}', inline=True)
+    embed.add_field(name='HP', value=f'{int(player.current_hp)}/{player.max_hp}', inline=True)
+    embed.add_field(name='MP', value=f'{int(player.current_mp)}/{player.max_mp}', inline=True)
     embed.add_field(name='Strenght', value=f':crossed_swords: : {player.strenght}', inline=True)
     embed.add_field(name='Defense', value=f':shield: : {player.defense}', inline=True)
     embed.add_field(name='Magic', value=f':magic_wand: : {player.magic}', inline=True)
-    embed.add_field(name='Speed', value=f':person_running:  : {player.speed}', inline=True)
     embed.add_field(name='Nex Lv', value=player.next_lv, inline=True)
-    embed.add_field(name='Skill pts', value=player.skill_points, inline=False)
+    embed.add_field(name='Skill pts', value=player.skill_points, inline=True)
+    embed.add_field(name='KOs', value=f':skull_crossbones:  {player.kills}', inline=True)
+    embed.add_field(name='KOed', value=f':cross: {player.deaths}', inline=True)
+    embed.add_field(name='Resets', value=f':arrows_counterclockwise: {player.resets}', inline=True)
 
     return await ctx.send('', embed=embed)
 
@@ -87,6 +90,7 @@ async def skills(ctx, arg='list'):
     """
     valid_args = ['set', 'list']
     user = ctx.message.author
+
     member = next(get_member(str(ctx.message.guild.id), str(user.id)))
     if not member:
         return await ctx.send('Member not found!')
@@ -222,7 +226,7 @@ async def add_stat(ctx, stat=None, value=''):
     value = int(value)
 
     # stat must be valid
-    valid_stats = set(['strenght', 'magic', 'defense', 'speed', 'hp', 'mp',])
+    valid_stats = set(['strenght', 'magic', 'defense', 'hp', 'mp',])
     if stat not in valid_stats:
         return await ctx.send(
             f'Invalid stat attribute {stat} \
@@ -267,3 +271,76 @@ async def add_stat(ctx, stat=None, value=''):
     return await ctx.send(
         f'Updated {stat} in {value}!\nSkill points left: {member["skill_points"]}'
     )
+
+
+@client.command(aliases=['use', 'cast'])
+async def use_skill(ctx, skill_name=None):
+    """
+    Use a skill available on the skillset
+    """
+    if not skill_name:
+        return await ctx.send(
+            'Must specify a skill and a target'\
+            '\nExample: `o:use flame @foo`'
+        )
+
+    mentions = ctx.message.mentions
+    if not mentions:
+        return await ctx.send('You must mention someone @Username')
+
+    # get user from database
+    user = ctx.message.author
+    member = next(get_member(str(ctx.message.guild.id), str(user.id)))
+    if not member:
+        return await ctx.send('Member not found!')
+
+    # get target from databse
+    target = mentions[0]
+    target_member = next(get_member(str(ctx.message.guild.id), str(target.id)))
+    if not target_member:
+        return await ctx.send('Target not found on database.')
+
+    attacker = Player(**member, name=user.name)
+    defender = Player(**target_member, name=target.name)
+
+    # Check battle possibilities
+    if not defender.is_alive():
+        return await ctx.send('Cant attack dead player!')
+
+    if not attacker.is_alive():
+        return await ctx.send('Dead player use no skills!')
+
+    if skill_name not in attacker.get_skillset().keys():
+        return await ctx.send(f'Unknow skill {skill_name}')
+
+    # battle engage
+    combat = attacker.attack(
+        attacker.get_skillset()[skill_name],
+        defender
+    )
+
+    # updates defender data on database
+    target_member['current_hp'] = defender.current_hp
+    target_member['current_mp'] = defender.current_mp
+    target_member['kills'] = defender.kills
+    target_member['deaths'] = defender.deaths
+    update_defender = update_member(
+        collection_name=str(ctx.message.guild.id),
+        member_id=str(user.id),
+        data=target_member
+    )
+    log.info(update_defender)
+
+    # updates attacjer data on database
+    member['current_hp'] = attacker.current_hp
+    member['current_mp'] = attacker.current_mp
+    member['kills'] = attacker.kills
+    member['deaths'] = attacker.deaths
+    update_attacker = update_member(
+        collection_name=str(ctx.message.guild.id),
+        member_id=str(user.id),
+        data=member
+    )
+    log.info(update_attacker)
+
+    return await ctx.send(combat['log'])

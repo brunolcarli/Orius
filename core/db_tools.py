@@ -5,6 +5,11 @@ import logging
 log = logging.getLogger()
 
 
+class NotFoundOnDb(Exception):
+    def __str__(self):
+        return 'Object not found on database'
+
+
 def get_db():
     """
     Returns a mongo client connection cursor for database defined on
@@ -42,7 +47,6 @@ def get_or_create_member(cursor):
     member['strenght'] = 10
     member['defense'] = 10
     member['magic'] = 10
-    member['speed'] = 8
     member['skillset'] = []
     member['learned_skills'] = []
     member['items'] = []
@@ -50,7 +54,6 @@ def get_or_create_member(cursor):
     member['kills'] = 0
     member['deaths'] = 0
     member['resets'] = 0
-    member['delay'] = 0
     member['next_lv'] = next_lv(member['lv'])
 
     return member

@@ -1,4 +1,10 @@
+import logging
 from core.character.skill import Skill
+from core.db_tools import get_member, update_member, NotFoundOnDb
+from core.util import get_damage
+
+
+log = logging.getLogger()
 
 
 class Player:
@@ -21,7 +27,6 @@ class Player:
         self.strenght = attributes.get('strenght')
         self.defense = attributes.get('defense')
         self.magic = attributes.get('magic')
-        self.speed = attributes.get('speed')
         self.next_lv = attributes.get('next_lv')
         self.messages = attributes.get('messages')
         self.skill_points = attributes.get('skill_points')
@@ -31,7 +36,6 @@ class Player:
         self.resets = attributes.get('resets')
         self.kills = attributes.get('kills')
         self.deaths = attributes.get('deaths')
-        self.delay = attributes.get('delay')
 
     def __repr__(self):
         """
@@ -43,43 +47,29 @@ class Player:
         """
         Returns True if player is alive and False if its dead.
         """
-        return True if self.hp > 0 else False
+        return True if self.current_hp > 0 else False
 
     def list_skills(self):
         """
         Returns a <list> of <Skill> this player has learned.
         """
-        return [Skill(**skill) for skill in self.learned_skills]
+        return {skill.get('name'): Skill(**skill) for skill in self.learned_skills}
 
     def get_skillset(self):
         """
         Returns a <list> of <Skill> this player setted for combat.
         """
-        return [Skill(**skill) for skill in self.skillset]
+        return {skill.get('name'): Skill(**skill) for skill in self.skillset}
 
-    def get_skill(self, skill_name):
+    def hit(self, damage):
         """
-        Returns a <Skill> based on its name.
-        param: skill_name : <str>
-        """
-        skill = [skill for skill in self.skills if skill.get('name') == skill_name]
-        return next(Skill(**skill))
-
-    def get_damage(self, damage):
-        """
-        Decreases player health points (hp) equal to damage taken.
-        Returns True if player still alive after the damage and False if dies.
+        Takes combat damage from attacking player.
         param : damage : <int>
         """
-        self.hp -= damage
+        self.current_hp -= damage
 
-        if self.hp <= 0:
-            self.hp = 0
-
-        return self.is_alive()
-
-    def hit(self, skill):  # TODO <- fazer uma classe skill, montar a logica de dano
-        pass
+        if self.current_hp <= 0:
+            self.current_hp = 0
 
     def attack(self, skill, target):
         """
@@ -88,18 +78,45 @@ class Player:
         param : target : <Player>
         return: <dict>
         """
-        if skill.cost > self.mp:
+        if skill.cost > self.current_mp:
             return {
                 'hit': False,
                 'target_alive': True,
                 'log': 'Not enough move points!'
             }
 
-        self.mp -= skill.cost
+        self.current_mp -= skill.cost
+
+        # maps the damage base stats
+        damage_base_stat = {
+            'physical': self.strenght,
+            'magic': self.magic
+        }
+        defense_base_stat = {
+            'physical': target.defense,
+            'magic': target.magic
+        }
+
+        # calculates the total damage
+        damage = get_damage(
+            damage_base_stat[skill.type],
+            skill.power,
+            defense_base_stat[skill.type]
+        )
+        target.hit(damage)
+
+        log_msg = f'{self.name} used {skill.name} on {target.name}.' \
+                  f'{target.name} lost {int(damage)} hp.'
+
+        if not target.is_alive():
+            self.kills += 1
+            target.deaths += 1
+            log_msg += f'\n{target.name} was knocked out.'
+
+        log.info(log_msg)
 
         return {
             'hit': True,
-            'target_alive': target.hit(skill),
-            'log': f'Hit target with {skill}'
+            'target_alive': target.is_alive(),
+            'log': log_msg
         }
-

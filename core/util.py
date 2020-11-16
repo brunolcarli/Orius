@@ -57,3 +57,10 @@ def level_up(member):
                     member['learned_skills'].append(new_skill)
 
     return member
+
+
+def get_damage(player_power, skill_power, target_defense):
+    """
+    Calculates the battle damage.
+    """
+    return (player_power + skill_power - target_defense) / 2
