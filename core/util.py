@@ -44,7 +44,6 @@ def level_up(member):
             member['strenght'] += randint(0, 2)
             member['defense'] += randint(0, 2)
             member['magic'] += randint(0, 2)
-            member['speed'] += randint(0, 1)
             member['skill_points'] += 2
 
             # 50% chance learning a skill on level up
