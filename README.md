@@ -14,9 +14,12 @@
 
 > [![Version badge](https://img.shields.io/badge/version-1.0.0-silver.svg)]()
 [![Docs Link](https://badgen.net/badge/docs/github_wiki?icon=github)](https://github.com/brunolcarli/Orius/wiki)
+[![Add to discord](https://badgen.net/badge/icon/discord?icon=discord&label)](https://discord.com/api/oauth2/authorize?client_id=776075554817310730&permissions=1074261056&scope=bot)
 
 
 Discord Bot for Role Playing Game such as leveling up, skill gathering and guild member battles!
+
+[Add to your discord server](https://discord.com/api/oauth2/authorize?client_id=776075554817310730&permissions=1074261056&scope=bot)
 
 </div>
 
@@ -112,3 +115,8 @@ Create a new user with root role for your access:
 > use admin
 > db.createUser({user: "username", pwd: "password", roles: ["root"]})
 ```
+
+
+#### See also:
+
+- [Noob guide: running on local machine](https://github.com/brunolcarli/Orius/wiki/Noob-Guide:-Develop-and-run)
