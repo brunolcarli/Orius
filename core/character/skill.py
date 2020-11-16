@@ -26,7 +26,7 @@ SKILL_LIST = {
         {'name': 'snowball', 'type': 'magic', 'power': 20, 'cost': 3, 'effect': None},
         {'name': 'windcutter', 'type': 'magic', 'power': 30, 'cost': 4, 'effect': None},
         {'name': 'hail', 'type': 'magic', 'power': 30, 'cost': 4, 'effect': None},
-        # {'name': 'war cry', 'type': 'buff', 'power': 0, 'cost': 5, 'effect': 'strenght +10%'},
+        # {'name': 'war cry', 'type': 'buff', 'power': 0, 'cost': 5, 'effect': 'strength +10%'},
         # {'name': 'meditation', 'type': 'buff', 'power': 0, 'cost': 5, 'effect': 'magic +10%'},
         # {'name': 'work up', 'type': 'buff', 'power': 0, 'cost': 5, 'effect': 'defense +10%'},
     ],
@@ -63,6 +63,6 @@ SKILL_LIST = {
         {'name': 'meteor', 'type': 'magic', 'power': 100, 'cost': 25, 'effect': None},
         # {'name': 'barrier', 'type': 'buff', 'power': 0, 'cost': 15, 'effect': 'defense +25%'},
         # {'name': 'concentrate', 'type': 'buff', 'power': 0, 'cost': 15, 'effect': 'magic +25%'},
-        # {'name': 'dragon spirit', 'type': 'buff', 'power': 0, 'cost': 15, 'effect': 'strenght +25%'},
+        # {'name': 'dragon spirit', 'type': 'buff', 'power': 0, 'cost': 15, 'effect': 'strength +25%'},
     ],
 }

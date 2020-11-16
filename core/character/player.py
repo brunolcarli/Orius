@@ -24,7 +24,7 @@ class Player:
         self.max_mp = attributes.get('max_mp')
         self.current_hp = attributes.get('current_hp')
         self.current_mp = attributes.get('current_mp')
-        self.strenght = attributes.get('strenght')
+        self.strength = attributes.get('strength')
         self.defense = attributes.get('defense')
         self.magic = attributes.get('magic')
         self.next_lv = attributes.get('next_lv')
@@ -89,7 +89,7 @@ class Player:
 
         # maps the damage base stats
         damage_base_stat = {
-            'physical': self.strenght,
+            'physical': self.strength,
             'magic': self.magic
         }
         defense_base_stat = {

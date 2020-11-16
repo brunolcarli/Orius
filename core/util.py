@@ -41,7 +41,7 @@ def level_up(member):
 
             member['max_hp'] += randint(10, 50)
             member['max_mp'] += randint(5, 25)
-            member['strenght'] += randint(0, 2)
+            member['strength'] += randint(0, 2)
             member['defense'] += randint(0, 2)
             member['magic'] += randint(0, 2)
             member['skill_points'] += 2

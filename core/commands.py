@@ -98,7 +98,7 @@ async def status(ctx):
     embed.add_field(name='Lv', value=player.lv, inline=True)
     embed.add_field(name='HP', value=f'{int(player.current_hp)}/{player.max_hp}', inline=True)
     embed.add_field(name='MP', value=f'{int(player.current_mp)}/{player.max_mp}', inline=True)
-    embed.add_field(name='Strenght', value=f':crossed_swords: : {player.strenght}', inline=True)
+    embed.add_field(name='strength', value=f':crossed_swords: : {player.strength}', inline=True)
     embed.add_field(name='Defense', value=f':shield: : {player.defense}', inline=True)
     embed.add_field(name='Magic', value=f':magic_wand: : {player.magic}', inline=True)
     embed.add_field(name='Nex Lv', value=player.next_lv, inline=True)
@@ -255,7 +255,7 @@ async def add_stat(ctx, stat=None, value=''):
     value = int(value)
 
     # stat must be valid
-    valid_stats = set(['strenght', 'magic', 'defense', 'hp', 'mp',])
+    valid_stats = set(['strength', 'magic', 'defense', 'hp', 'mp',])
     if stat not in valid_stats:
         return await ctx.send(
             f'Invalid stat attribute {stat} \

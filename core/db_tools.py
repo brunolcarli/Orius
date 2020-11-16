@@ -44,7 +44,7 @@ def get_or_create_member(cursor):
     member['max_mp'] = 100
     member['current_hp'] = 200
     member['current_mp'] = 100
-    member['strenght'] = 10
+    member['strength'] = 10
     member['defense'] = 10
     member['magic'] = 10
     member['skillset'] = []
