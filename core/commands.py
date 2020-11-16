@@ -350,8 +350,6 @@ async def use_skill(ctx, skill_name=None):
 
     # updates defender data on database
     target_member['current_hp'] = defender.current_hp
-    target_member['current_mp'] = defender.current_mp
-    target_member['kills'] = defender.kills
     target_member['deaths'] = defender.deaths
     update_defender = update_member(
         collection_name=str(ctx.message.guild.id),
@@ -360,11 +358,9 @@ async def use_skill(ctx, skill_name=None):
     )
     log.info(update_defender)
 
-    # updates attacjer data on database
-    member['current_hp'] = attacker.current_hp
+    # updates attacker data on database
     member['current_mp'] = attacker.current_mp
     member['kills'] = attacker.kills
-    member['deaths'] = attacker.deaths
     update_attacker = update_member(
         collection_name=str(ctx.message.guild.id),
         member_id=str(user.id),
