@@ -1,6 +1,13 @@
 from pymongo import MongoClient
 from orius.settings import MONGO_CONFIG
 from core.util import next_lv, level_up
+import logging
+log = logging.getLogger()
+
+
+class NotFoundOnDb(Exception):
+    def __str__(self):
+        return 'Object not found on database'
 
 
 def get_db():
@@ -8,9 +15,12 @@ def get_db():
     Returns a mongo client connection cursor for database defined on
     settings.
     """
-    client = MongoClient(
-        f'{MONGO_CONFIG["MONGO_HOST"]}:{MONGO_CONFIG["MONGO_PORT"]}'
-    )
+    user = MONGO_CONFIG['MONGO_USER']
+    pwd = MONGO_CONFIG['MONGO_PASS']
+    host = MONGO_CONFIG['MONGO_HOST']
+    port = MONGO_CONFIG['MONGO_PORT']
+
+    client = MongoClient(f'mongodb://{user}:{pwd}@{host}:{port}')
 
     return client[MONGO_CONFIG['MONGO_DATABASE']]
 
@@ -30,27 +40,41 @@ def get_or_create_member(cursor):
 
     # Define default attributes
     member['lv'] = 1
-    member['hp'] = 200
-    member['mp'] = 100
-    member['atk'] = 10
-    member['def'] = 10
-    member['mag'] = 10
-    member['skills'] = []
+    member['max_hp'] = 200
+    member['max_mp'] = 100
+    member['current_hp'] = 200
+    member['current_mp'] = 100
+    member['strength'] = 10
+    member['defense'] = 10
+    member['magic'] = 10
+    member['skillset'] = []
+    member['learned_skills'] = []
+    member['items'] = []
+    member['skill_points'] = 0
+    member['kills'] = 0
+    member['deaths'] = 0
+    member['resets'] = 0
     member['next_lv'] = next_lv(member['lv'])
 
     return member
 
 
-def update_member(collection_name, member_id):
+def update_member(collection_name, member_id, data):
+    """
+    Updates a member data on database.
+    param : collection_name : <str>
+    param : member_id : <str>
+    param : data: <dict>
+    return: <pymongo.cursor.Cursor>
+    """
     collection = get_db()[collection_name]
 
     query = collection.update(
         {'member': member_id},
-        {'$inc': {'messages': 1}},
+        data,
         upsert=True
     )
-    # TODO trocar por log
-    print(query)
+    log.info('Identified member with id %s', member_id)
 
     # refreshs the query to get the member
     refresh = collection.find({'member': member_id})
@@ -65,7 +89,27 @@ def update_member(collection_name, member_id):
         {'member': member_id},
         member,
     )
-    # TODO trocar por log
-    print(query)
+    log.info('Updated member %s', member_id)
 
     return member
+
+
+def get_member(collection_name, member_id):
+    """
+    Returns a member data from database.
+    param : collection_name : <str>
+    param : member_id : <str>
+    retur: <pymongo.cursor.Cursor>
+    """
+    collection = get_db()[collection_name]
+
+    return collection.find({'member': member_id})
+
+
+def get_members(collection_name):
+    """
+    Returns all members from a collection.
+    """
+    collection = get_db()[collection_name]
+
+    return collection.find()

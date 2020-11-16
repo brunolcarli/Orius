@@ -2,3 +2,5 @@ export TOKEN=your_bot_token
 export MONGO_DATABASE=your_database_name
 export MONGO_HOST=your_database_host
 export MONGO_PORT=your_database_port
+export MONGO_USER=your_database_user
+export MONGO_PASS=your_database_pwd
