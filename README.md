@@ -12,7 +12,7 @@
 
 <div align="center">
 
-> [![Version badge](https://img.shields.io/badge/version-0.0.1-silver.svg)]()
+> [![Version badge](https://img.shields.io/badge/version-1.0.0-silver.svg)]()
 [![Docs Link](https://badgen.net/badge/docs/github_wiki?icon=github)](https://github.com/brunolcarli/Orius/wiki)
 
 
