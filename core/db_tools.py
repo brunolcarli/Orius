@@ -32,7 +32,7 @@ def get_or_create_member(cursor):
 
     param : cursor : <pymongo.cursor.Cursor>
     """
-    member = cursor.next()
+    member = next(cursor)
 
     if member.get('lv'):
         # If an Level attribute exists the the member has already been seted

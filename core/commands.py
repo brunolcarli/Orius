@@ -241,9 +241,6 @@ async def add_stat(ctx, stat=None, value=''):
     An attribute and a value must be specified.
         -> Example: o:add_stat magic 1
     """
-    print('++++++++++')
-    print(value)
-    print('++++++++++')
     if not stat and not value:
         return await ctx.send(
             'Must specify attribute and value:\n`o:add magic 1`'
@@ -264,7 +261,7 @@ async def add_stat(ctx, stat=None, value=''):
 
     # get member from database
     user = ctx.message.author
-    member = next(get_member(str(ctx.message.guild.id), str(user.id)))
+    member = next(get_member(str(ctx.message.guild.id), str(user.id)), None)
     if not member:
         return await ctx.send('Member not found!')
 
@@ -325,7 +322,7 @@ async def use_skill(ctx, skill_name=None):
 
     # get target from databse
     target = mentions[0]
-    target_member = next(get_member(str(ctx.message.guild.id), str(target.id)))
+    target_member = next(get_member(str(ctx.message.guild.id), str(target.id)), None)
     if not target_member:
         return await ctx.send('Target not found on database.')
 
