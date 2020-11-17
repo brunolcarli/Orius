@@ -139,7 +139,7 @@ async def skills(ctx, arg='list'):
     if not skills:
         return await ctx.send('User has no skills for this option!')
 
-    skills = '\n'.join(str(skill) for skill in skills)
+    skills = '\n'.join(str(skill) for skill in skills.values())
 
     embed = discord.Embed(color=0x1E1E1E, type='rich')
     embed.set_thumbnail(url=avatar_url)
