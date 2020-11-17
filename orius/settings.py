@@ -3,7 +3,7 @@ Orius settings module.
 """
 import os
 
-__version__ = '1.0.2'
+__version__ = '1.1.0'
 
 TOKEN = os.environ.get('TOKEN', '')
 
