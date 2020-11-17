@@ -351,7 +351,7 @@ async def use_skill(ctx, skill_name=None):
     target_member.pop('_id', None)
     update_defender = update_member(
         collection_name=str(ctx.message.guild.id),
-        member_id=str(user.id),
+        member_id=str(target.id),
         data=target_member
     )
     log.info(update_defender)

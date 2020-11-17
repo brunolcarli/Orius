@@ -69,11 +69,15 @@ def update_member(collection_name, member_id, data):
     """
     collection = get_db()[collection_name]
 
-    query = collection.update(
-        {'member': member_id},
-        data,
-        upsert=True
-    )
+    collection.create_index('member', unique=True)
+    try:
+        query = collection.update(
+            {'member': member_id},
+            data,
+            upsert=True
+        )
+    except:
+        pass
     log.info('Identified member with id %s', member_id)
 
     # refreshs the query to get the member
