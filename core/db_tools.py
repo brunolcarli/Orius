@@ -1,9 +1,13 @@
+from expiringdict import ExpiringDict
 from pymongo import MongoClient
 from orius.settings import MONGO_CONFIG
 from core.util import next_lv, level_up
 import logging
 log = logging.getLogger()
 
+
+# Active Time Battle: 10s wait time loader for player per server to use skills.
+ATB = ExpiringDict(9999, 10)
 
 class NotFoundOnDb(Exception):
     def __str__(self):
@@ -32,7 +36,7 @@ def get_or_create_member(cursor):
 
     param : cursor : <pymongo.cursor.Cursor>
     """
-    member = cursor.next()
+    member = next(cursor)
 
     if member.get('lv'):
         # If an Level attribute exists the the member has already been seted
@@ -69,11 +73,15 @@ def update_member(collection_name, member_id, data):
     """
     collection = get_db()[collection_name]
 
-    query = collection.update(
-        {'member': member_id},
-        data,
-        upsert=True
-    )
+    collection.create_index('member', unique=True)
+    try:
+        query = collection.update(
+            {'member': member_id},
+            data,
+            upsert=True
+        )
+    except:
+        pass
     log.info('Identified member with id %s', member_id)
 
     # refreshs the query to get the member

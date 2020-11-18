@@ -14,7 +14,7 @@ if __name__ == '__main__':
         │ │├┬┘││ │└─┐
         └─┘┴└─┴└─┘└─┘
         =============
-        Dicord RPG Bot
+        Discord RPG Bot
         '''
     )
     log.info('Running Orius version: %s\n', __version__)

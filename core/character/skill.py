@@ -9,7 +9,11 @@ class Skill:
         self.effect = data.get('effect')
 
     def __repr__(self):
-        return f'{self.name} | Cost: {self.cost} | Power: {self.power}'
+        emojis = {
+            'physical': ':crossed_swords:',
+            'magic': ':magic_wand:'
+        }
+        return f'{self.name} | Cost: {self.cost} | Power: {self.power} {emojis[self.type]}'
 
 
 # hardcoded available skills

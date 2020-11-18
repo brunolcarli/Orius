@@ -2,4 +2,3 @@
 
 bumpversion==0.5.3
 bpython==0.18
-halo==0.0.29

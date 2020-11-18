@@ -2,8 +2,8 @@ import logging
 import discord
 from discord.ext import commands, tasks
 from orius.settings import __version__
-
-from core.db_tools import update_member, get_member, NotFoundOnDb, get_members
+from core.util import make_atb_key
+from core.db_tools import update_member, get_member, NotFoundOnDb, get_members, ATB
 from core.character.player import Player
 
 client = commands.Bot(command_prefix='o:')
@@ -139,7 +139,7 @@ async def skills(ctx, arg='list'):
     if not skills:
         return await ctx.send('User has no skills for this option!')
 
-    skills = '\n'.join(str(skill) for skill in skills)
+    skills = '\n'.join(str(skill) for skill in skills.values())
 
     embed = discord.Embed(color=0x1E1E1E, type='rich')
     embed.set_thumbnail(url=avatar_url)
@@ -241,9 +241,6 @@ async def add_stat(ctx, stat=None, value=''):
     An attribute and a value must be specified.
         -> Example: o:add_stat magic 1
     """
-    print('++++++++++')
-    print(value)
-    print('++++++++++')
     if not stat and not value:
         return await ctx.send(
             'Must specify attribute and value:\n`o:add magic 1`'
@@ -264,7 +261,7 @@ async def add_stat(ctx, stat=None, value=''):
 
     # get member from database
     user = ctx.message.author
-    member = next(get_member(str(ctx.message.guild.id), str(user.id)))
+    member = next(get_member(str(ctx.message.guild.id), str(user.id)), None)
     if not member:
         return await ctx.send('Member not found!')
 
@@ -325,7 +322,7 @@ async def use_skill(ctx, skill_name=None):
 
     # get target from databse
     target = mentions[0]
-    target_member = next(get_member(str(ctx.message.guild.id), str(target.id)))
+    target_member = next(get_member(str(ctx.message.guild.id), str(target.id)), None)
     if not target_member:
         return await ctx.send('Target not found on database.')
 
@@ -342,6 +339,10 @@ async def use_skill(ctx, skill_name=None):
     if skill_name not in attacker.get_skillset().keys():
         return await ctx.send(f'Unknow skill {skill_name}')
 
+    member_atb = ATB.get(make_atb_key(ctx.message.guild.id, user.id))
+    if member_atb:
+        return await ctx.send('You have to wait 10s before next movement!') 
+
     # battle engage
     combat = attacker.attack(
         attacker.get_skillset()[skill_name],
@@ -351,9 +352,10 @@ async def use_skill(ctx, skill_name=None):
     # updates defender data on database
     target_member['current_hp'] = defender.current_hp
     target_member['deaths'] = defender.deaths
+    target_member.pop('_id', None)
     update_defender = update_member(
         collection_name=str(ctx.message.guild.id),
-        member_id=str(user.id),
+        member_id=str(target.id),
         data=target_member
     )
     log.info(update_defender)
@@ -361,11 +363,15 @@ async def use_skill(ctx, skill_name=None):
     # updates attacker data on database
     member['current_mp'] = attacker.current_mp
     member['kills'] = attacker.kills
+    member.pop('_id', None)
     update_attacker = update_member(
         collection_name=str(ctx.message.guild.id),
         member_id=str(user.id),
         data=member
     )
     log.info(update_attacker)
+
+    # next combat action have to wait 10 seconds
+    ATB[make_atb_key(ctx.message.guild.id, user.id)] = True
 
     return await ctx.send(combat['log'])
