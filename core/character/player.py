@@ -116,12 +116,12 @@ class Player:
         # good luck, critical hit
         elif luck == 20:
             damage = int(damage * (randint(1, 2) + random()))
-            luck_msg = '\nA critical hit, impressive!\n'\
-                        f'{target.name} lost {int(damage)} hp.'
+            luck_msg = '\nA **critical** hit, impressive!\n'\
+                        f'{target.name} lost **{int(damage)}** hp.'
 
         # regular play
         else:
-            luck_msg = f'{target.name} lost {int(damage)} hp.'
+            luck_msg = f'\n{target.name} lost **{int(damage)}** hp.'
 
         target.hit(damage)
 
@@ -131,7 +131,7 @@ class Player:
         if not target.is_alive():
             self.kills += 1
             target.deaths += 1
-            log_msg += f'\n{target.name} was knocked out.'
+            log_msg += f'\n{target.name} was **knocked out**.'
 
         log.info(log_msg)
 
