@@ -1,9 +1,19 @@
 """
 General utilities and tools.
 """
+from base64 import b64encode
 from math import ceil
 from random import randint, choice
 from core.character.skill import SKILL_LIST
+
+
+def make_atb_key(guild_id, member_id):
+    """
+    Makes a hash key to store member ATB on a timed expiring dict.
+    The key is a base64 string withe the pattern guild_id:member_id.
+    returns : <str>
+    """
+    return b64encode(f'{guild_id}:{member_id}'.encode('utf-8')).decode('utf-8')
 
 
 def get_member_skill_rank(lv):

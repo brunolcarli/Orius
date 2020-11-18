@@ -2,8 +2,8 @@ import logging
 import discord
 from discord.ext import commands, tasks
 from orius.settings import __version__
-
-from core.db_tools import update_member, get_member, NotFoundOnDb, get_members
+from core.util import make_atb_key
+from core.db_tools import update_member, get_member, NotFoundOnDb, get_members, ATB
 from core.character.player import Player
 
 client = commands.Bot(command_prefix='o:')
@@ -339,6 +339,10 @@ async def use_skill(ctx, skill_name=None):
     if skill_name not in attacker.get_skillset().keys():
         return await ctx.send(f'Unknow skill {skill_name}')
 
+    member_atb = ATB.get(make_atb_key(ctx.message.guild.id, user.id))
+    if member_atb:
+        return await ctx.send('You have to wait 10s before next movement!') 
+
     # battle engage
     combat = attacker.attack(
         attacker.get_skillset()[skill_name],
@@ -366,5 +370,8 @@ async def use_skill(ctx, skill_name=None):
         data=member
     )
     log.info(update_attacker)
+
+    # next combat action have to wait 10 seconds
+    ATB[make_atb_key(ctx.message.guild.id, user.id)] = True
 
     return await ctx.send(combat['log'])

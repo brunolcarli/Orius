@@ -1,9 +1,13 @@
+from expiringdict import ExpiringDict
 from pymongo import MongoClient
 from orius.settings import MONGO_CONFIG
 from core.util import next_lv, level_up
 import logging
 log = logging.getLogger()
 
+
+# Active Time Battle: 10s wait time loader for player per server to use skills.
+ATB = ExpiringDict(9999, 10)
 
 class NotFoundOnDb(Exception):
     def __str__(self):
