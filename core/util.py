@@ -7,6 +7,14 @@ from random import randint, choice
 from core.character.skill import SKILL_LIST
 
 
+def roll_d20():
+    """
+    Rolls a 20 sided dice.
+    Returns a integer between 1 and 20.
+    """
+    return randint(1, 20)
+
+
 def make_atb_key(guild_id, member_id):
     """
     Makes a hash key to store member ATB on a timed expiring dict.

@@ -1,7 +1,8 @@
 import logging
+from random import random, randint
 from core.character.skill import Skill
 from core.db_tools import get_member, update_member, NotFoundOnDb
-from core.util import get_damage
+from core.util import get_damage, roll_d20
 
 
 log = logging.getLogger()
@@ -103,10 +104,29 @@ class Player:
             skill.power,
             defense_base_stat[skill.type]
         )
+
+        # the hands of destiny
+        luck = roll_d20()
+
+        # bad luck, attack missed
+        if luck == 1:
+            damage = 0
+            luck_msg = f'\n{self.name} missed the hit.'
+
+        # good luck, critical hit
+        elif luck == 20:
+            damage = int(damage * (randint(1, 2) + random()))
+            luck_msg = '\nA critical hit, impressive!\n'\
+                        f'{target.name} lost {int(damage)} hp.'
+
+        # regular play
+        else:
+            luck_msg = f'{target.name} lost {int(damage)} hp.'
+
         target.hit(damage)
 
         log_msg = f'{self.name} used {skill.name} on {target.name}.' \
-                  f'{target.name} lost {int(damage)} hp.'
+                  f'{luck_msg}'
 
         if not target.is_alive():
             self.kills += 1
