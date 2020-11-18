@@ -111,7 +111,7 @@ class Player:
         # bad luck, attack missed
         if luck == 1:
             damage = 0
-            luck_msg = f'\n{self.name} missed the hit.'
+            luck_msg = f'\n{self.name} **missed** the hit.'
 
         # good luck, critical hit
         elif luck == 20:
@@ -125,7 +125,7 @@ class Player:
 
         target.hit(damage)
 
-        log_msg = f'{self.name} used {skill.name} on {target.name}.' \
+        log_msg = f'{self.name} used **{skill.name}** on {target.name}.' \
                   f'{luck_msg}'
 
         if not target.is_alive():

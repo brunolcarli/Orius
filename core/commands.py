@@ -300,19 +300,21 @@ async def add_stat(ctx, stat=None, value=''):
 
 
 @client.command(aliases=['use', 'cast'])
-async def use_skill(ctx, skill_name=None):
+async def use_skill(ctx, *skill_name):
     """
     Use a skill available on the skillset
     """
+    mentions = ctx.message.mentions
+    if not mentions:
+        return await ctx.send('You must mention someone @Username')
+
     if not skill_name:
         return await ctx.send(
             'Must specify a skill and a target'\
             '\nExample: `o:use flame @foo`'
         )
 
-    mentions = ctx.message.mentions
-    if not mentions:
-        return await ctx.send('You must mention someone @Username')
+    skill_name = ' '.join(token for token in skill_name).split('<')[0].strip()
 
     # get user from database
     user = ctx.message.author
@@ -366,7 +368,7 @@ async def use_skill(ctx, skill_name=None):
     member.pop('_id', None)
 
     # earn exp on defeating a player
-    if not combat['target_live']:
+    if not combat['target_alive']:
         member['messages'] += target.lv * 2
 
     update_attacker = update_member(
