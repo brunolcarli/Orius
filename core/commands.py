@@ -101,7 +101,7 @@ async def status(ctx):
     embed.add_field(name='strength', value=f':crossed_swords: : {player.strength}', inline=True)
     embed.add_field(name='Defense', value=f':shield: : {player.defense}', inline=True)
     embed.add_field(name='Magic', value=f':magic_wand: : {player.magic}', inline=True)
-    embed.add_field(name='Nex Lv', value=player.next_lv, inline=True)
+    embed.add_field(name='Nex Lv', value=f'{player.messages}/{player.next_lv}', inline=True)
     embed.add_field(name='Skill pts', value=player.skill_points, inline=True)
     embed.add_field(name='KOs', value=f':skull_crossbones:  {player.kills}', inline=True)
     embed.add_field(name='KOed', value=f':cross: {player.deaths}', inline=True)
