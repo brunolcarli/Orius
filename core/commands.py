@@ -151,7 +151,7 @@ async def skills(ctx, arg='list'):
 
 
 @client.command(aliases=['ssk', 'assign', 'set'])
-async def set_skill(ctx, skill_name=None):
+async def set_skill(ctx, *skill_name):
     """
     Sets a skill to the skillset.
     A skill name must be specified.
@@ -160,6 +160,7 @@ async def set_skill(ctx, skill_name=None):
     if not skill_name:
         return await ctx.send('Must specify a skillname!')
 
+    skill_name = ' '.join(token for token in skill_name)
     user = ctx.message.author
     member = next(get_member(str(ctx.message.guild.id), str(user.id)))
     if not member:
@@ -194,7 +195,7 @@ async def set_skill(ctx, skill_name=None):
 
 
 @client.command(aliases=['un', 'unassign', 'unset'])
-async def unset_skill(ctx, skill_name=None):
+async def unset_skill(ctx, *skill_name):
     """
     Unassign a skill from the skillset.
     A skill name must be specified.
@@ -203,6 +204,7 @@ async def unset_skill(ctx, skill_name=None):
     if not skill_name:
         return await ctx.send('Must specify a skillname!')
 
+    skill_name = ' '.join(token for token in skill_name)
     user = ctx.message.author
     member = next(get_member(str(ctx.message.guild.id), str(user.id)))
     if not member:
