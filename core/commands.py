@@ -371,7 +371,7 @@ async def use_skill(ctx, *skill_name):
 
     # earn exp on defeating a player
     if not combat['target_alive']:
-        member['messages'] += target_member.lv * 2
+        member['messages'] += target_member('lv', 5) * 2
 
     update_attacker = update_member(
         collection_name=str(ctx.message.guild.id),
