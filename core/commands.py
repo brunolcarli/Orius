@@ -11,7 +11,7 @@ client = commands.Bot(command_prefix='o:')
 log = logging.getLogger()
 
 
-class GuildTracker(commands.Cog):
+class HealingWave(commands.Cog):
     """
     Loop for healing players time to time.
     """
@@ -45,7 +45,7 @@ async def on_ready():
     Logs info message when initialized!
     """
     guilds = client.guilds
-    client.add_cog(GuildTracker())
+    client.add_cog(HealingWave())
     log.info('Orius ready and standing by!')
 
 
