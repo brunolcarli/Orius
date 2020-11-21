@@ -19,20 +19,20 @@ class HealingWave(commands.Cog):
         self.guilds = client.guilds
         self.healing_loop.start()
 
-    @tasks.loop(seconds=3600)
+    @tasks.loop(seconds=config.HEAL_TIME)
     async def healing_loop(self):
-        """ Tracking task """
-        log.info('tracking...')
+        """ Healing wave """
+        log.info('healing servers...')
         for guild in self.guilds:
             log.info(guild.name)
             members = get_members(str(guild.id))
 
             for member in members:
-                member['current_hp'] += member['max_hp'] * .1
+                member['current_hp'] += member['max_hp'] * config.HEAL_BUFF
                 if member['current_hp'] > member['max_hp']:
                     member['current_hp'] = member['max_hp']
 
-                member['current_mp'] += member['max_mp'] * .1
+                member['current_mp'] += member['max_mp'] * config.HEAL_BUFF
                 if member['current_mp'] > member['max_mp']:
                     member['current_mp'] = member['max_mp']
 

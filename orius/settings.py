@@ -20,10 +20,15 @@ class GameConfing:
     """
     General game settings.
     """
+    # stats stuff
     MAXIMUM_HP = 9999
     MAXIMUM_MP = 999
     MAXIMUM_STATS = 999
     MAXIMUM_RESETS = 999
     MAXIMUM_LV = 100
     MAXIMUM_DAMAGE = 999
+
+    # internal mechanics
     EXP_FACTOR = os.environ.get('EXP_FACTOR', 1)
+    HEAL_TIME = os.environ.get('HEAL_TIME', 3600)
+    HEAL_BUFF = os.environ.get('HEAL_BUFF', .1)
