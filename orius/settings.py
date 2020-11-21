@@ -15,3 +15,15 @@ MONGO_CONFIG = {
     'MONGO_PASS': os.environ.get('MONGO_PASS')
 }
 
+
+class GameConfing:
+    """
+    General game settings.
+    """
+    MAXIMUM_HP = 9999
+    MAXIMUM_MP = 999
+    MAXIMUM_STATS = 999
+    MAXIMUM_RESETS = 999
+    MAXIMUM_LV = 100
+    MAXIMUM_DAMAGE = 999
+    EXP_FACTOR = os.environ.get('EXP_FACTOR', 1)
