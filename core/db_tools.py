@@ -91,13 +91,14 @@ def update_member(collection_name, member_id, data):
     member = get_or_create_member(refresh)
 
     # calculates experience
-    level_up(member)
+    if member['lv'] < 100:
+        level_up(member)
 
-    query = collection.update(
-        {'member': member_id},
-        member,
-    )
-    log.info('Updated member %s', member_id)
+        query = collection.update(
+            {'member': member_id},
+            member,
+        )
+        log.info('Updated member %s', member_id)
 
     return member
 
