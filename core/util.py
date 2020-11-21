@@ -57,20 +57,32 @@ def level_up(member):
     : param : member : <dict>
     return: <dict>
     """
-    exp = member['messages']
-    next_lv = member['next_lv']
-    current_lv = member.get('lv')
-
-    while exp >= next_lv and current_lv < config.MAXIMUM_LV:
+    while member['messages'] >= member['next_lv'] and member.get('lv') < config.MAXIMUM_LV:
         member['lv'] += 1
         member['next_lv'] = next_lv(member['lv'])
 
-        member['max_hp'] += randint(10, 50) if member['max_hp'] < config.MXIMUM_HP else 0
-        member['max_mp'] += randint(5, 25) if member['max_mp'] < config.MXIMUM_MP else 0
-        member['strength'] += randint(0, 2) if member['strength'] < config.MXIMUM_STATS else 0
-        member['defense'] += randint(0, 2) if member['defense'] < config.MXIMUM_STATS else 0
-        member['magic'] += randint(0, 2) if member['magic'] < config.MXIMUM_STATS else 0
+        member['max_hp'] += randint(10, 50)
+        member['max_mp'] += randint(5, 25)
+        member['strength'] += randint(0, 2)
+        member['defense'] += randint(0, 2)
+        member['magic'] += randint(0, 2)
         member['skill_points'] += 2
+
+        #pply  maximum restrictions
+        if member['max_hp'] > config.MAXIMUM_HP:
+            member['max_hp'] = config.MAXIMUM_HP
+
+        if member['max_mp'] > config.MAXIMUM_MP:
+            member['max_mp'] = config.MAXIMUM_MP
+
+        if member['strength'] > config.MAXIMUM_STATS:
+            member['strength'] = config.MAXIMUM_STATS
+
+        if member['magic'] > config.MAXIMUM_STATS:
+            member['magic'] = config.MAXIMUM_STATS
+
+        if member['defense'] > config.MAXIMUM_STATS:
+            member['defense'] = config.MAXIMUM_STATS
 
         # 50% chance learning a skill on level up
         if choice([True, False]):

@@ -2,9 +2,9 @@ import logging
 import discord
 from discord.ext import commands, tasks
 from orius.settings import __version__
-from orius.settings import GameConfing as config
+from orius.settings import GameConfig as config
 from core.util import make_atb_key
-from core.db_tools import update_member, get_member, NotFoundOnDb, get_members, ATB
+from core.db_tools import update_member, get_member, NotFoundOnDb, get_members, ATB, reset_member
 from core.character.player import Player
 
 client = commands.Bot(command_prefix='o:')
@@ -106,12 +106,13 @@ async def status(ctx):
     embed.add_field(name='Skill pts', value=player.skill_points, inline=True)
     embed.add_field(name='KOs', value=f':skull_crossbones:  {player.kills}', inline=True)
     embed.add_field(name='KOed', value=f':cross: {player.deaths}', inline=True)
-    embed.add_field(name='Resets', value=f':arrows_counterclockwise: {player.resets}', inline=True)
+    resets = len(player.resets) if isinstance(player.resets, list) else player.resets
+    embed.add_field(name='Resets', value=f':arrows_counterclockwise: {resets}', inline=True)
 
     return await ctx.send('', embed=embed)
 
 
-@client.command(aliases=['sk'])
+@client.command(aliases=['sk', 'skill'])
 async def skills(ctx, arg='list'):
     """
     Lists skills learned or setted for this member.
@@ -140,13 +141,14 @@ async def skills(ctx, arg='list'):
     if not skills:
         return await ctx.send('User has no skills for this option!')
 
-    skills = '\n'.join(str(skill) for skill in skills.values())
+    # skills = '\n'.join(str(skill) for skill in skills.values())
 
     embed = discord.Embed(color=0x1E1E1E, type='rich')
     embed.set_thumbnail(url=avatar_url)
 
     embed.add_field(name='Name', value=player.name, inline=False)
-    embed.add_field(name='Skills', value=skills, inline=False)
+    for skill in list(skills.values()):
+        embed.add_field(name=skill.name, value=skill, inline=True)
 
     return await ctx.send('', embed=embed)
 
@@ -276,19 +278,36 @@ async def add_stat(ctx, stat=None, value=''):
     # update member stats
     if stat == 'hp':
         stat = 'max_hp'
+        if member[stat] == config.MAXIMUM_HP:
+            return await ctx.send('HP is already maximized!')
+
         member['skill_points'] -= value
         value = value *10
         member[stat] += value
+        if member[stat] > config.MAXIMUM_HP:
+            member[stat] = config.MAXIMUM_HP
+
 
     elif stat == 'mp':
         stat = 'max_mp'
+        if member[stat] == config.MAXIMUM_MP:
+            return await ctx.send('MP is already maximized!')
+
         member['skill_points'] -= value
         value = value * 10
         member[stat] += value
+        if member[stat] > config.MAXIMUM_MP:
+            member[stat] = config.MAXIMUM_MP
 
-    else:
+    else:    
+        if member[stat] == config.MAXIMUM_STATS:
+            return await ctx.send('This stat is already maximized!')
+
         member[stat] += value
         member['skill_points'] -= value
+        if member[stat] > config.MAXIMUM_STATS:
+            member[stat] = config.MAXIMUM_STATS
+
 
     update = update_member(
         collection_name=str(ctx.message.guild.id),
@@ -385,3 +404,32 @@ async def use_skill(ctx, *skill_name):
     ATB[make_atb_key(ctx.message.guild.id, user.id)] = True
 
     return await ctx.send(combat['log'])
+
+
+@client.command(aliases=['rst'])
+async def reset(ctx):
+    """
+    If a player level is above 50, he/she can resets the character.
+    Reseting the character returns you to lv 1 with base stats and loose all
+    your skills. But, in exchange you keep all skill points you earned before to
+    spend again the way you want on your stats.
+    """
+    user = ctx.message.author
+    member = next(get_member(str(ctx.message.guild.id), str(user.id)))
+    if not member:
+        return await ctx.send('Member not found!')
+
+    if member['lv'] < 50:
+        return await ctx.send(
+            'You are not allowed to reset yet.\n' \
+            'Only players with **lv 50** or higher are allowed to reset!'
+        )
+
+    member = reset_member(
+        collection_name=str(ctx.message.guild.id),
+        member_id=str(user.id),
+        member=member
+    )
+    log.info('Reseting member %s', user.name)
+
+    return await ctx.send('Reseted succesfull!')

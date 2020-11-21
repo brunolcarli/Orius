@@ -13,7 +13,7 @@ class Skill:
             'physical': ':crossed_swords:',
             'magic': ':magic_wand:'
         }
-        return f'{self.name} | Cost: {self.cost} | Power: {self.power} {emojis[self.type]}'
+        return f'{emojis[self.type]} | MP: {self.cost} | Power: {self.power}'
 
 
 # hardcoded available skills

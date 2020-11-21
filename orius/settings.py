@@ -16,7 +16,7 @@ MONGO_CONFIG = {
 }
 
 
-class GameConfing:
+class GameConfig:
     """
     General game settings.
     """
@@ -29,6 +29,6 @@ class GameConfing:
     MAXIMUM_DAMAGE = 999
 
     # internal mechanics
-    EXP_FACTOR = os.environ.get('EXP_FACTOR', 1)
-    HEAL_TIME = os.environ.get('HEAL_TIME', 3600)
-    HEAL_BUFF = os.environ.get('HEAL_BUFF', .1)
+    EXP_FACTOR = int(os.environ.get('EXP_FACTOR', 1))
+    HEAL_TIME = int(os.environ.get('HEAL_TIME', 3600))
+    HEAL_BUFF = float(os.environ.get('HEAL_BUFF', .1))
