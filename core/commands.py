@@ -2,6 +2,7 @@ import logging
 import discord
 from discord.ext import commands, tasks
 from orius.settings import __version__
+from orius.settings import GameConfing as config
 from core.util import make_atb_key
 from core.db_tools import update_member, get_member, NotFoundOnDb, get_members, ATB
 from core.character.player import Player
@@ -74,7 +75,7 @@ async def on_message(message):
     update = update_member(
         collection_name=str(message.guild.id),
         member_id=str(message.author.id),
-        data={'$inc': {'messages': 1}}
+        data={'$inc': {'messages': config.EXP_FACTOR}}
     )
     log.info(update)
 
@@ -132,7 +133,7 @@ async def skills(ctx, arg='list'):
     avatar_url = f'{ctx.message.author.avatar_url.BASE}/avatars/{user.id}/{user.avatar}'
     player = Player(**member, name=user.name)
     options = {
-        'list': player.list_skills(),
+        'list': player.get_skills(),
         'set': player.get_skillset()
     }
     skills = options[arg]
