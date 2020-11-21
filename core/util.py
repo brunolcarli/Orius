@@ -5,6 +5,7 @@ from base64 import b64encode
 from math import ceil
 from random import randint, choice
 from core.character.skill import SKILL_LIST
+from orius.settings import GameConfig as config
 
 
 def roll_d20():
@@ -51,27 +52,34 @@ def next_lv(level):
 
 
 def level_up(member):
+    """
+    Levels up a member, if possible.
+    : param : member : <dict>
+    return: <dict>
+    """
+    exp = member['messages']
+    next_lv = member['next_lv']
+    current_lv = member.get('lv')
 
-    if member['messages'] >= member['next_lv']:
-        while member['messages'] >= member['next_lv']:
-            member['lv'] += 1
-            member['next_lv'] = next_lv(member['lv'])
+    while exp >= next_lv and current_lv < config.MAXIMUM_LV:
+        member['lv'] += 1
+        member['next_lv'] = next_lv(member['lv'])
 
-            member['max_hp'] += randint(10, 50)
-            member['max_mp'] += randint(5, 25)
-            member['strength'] += randint(0, 2)
-            member['defense'] += randint(0, 2)
-            member['magic'] += randint(0, 2)
-            member['skill_points'] += 2
+        member['max_hp'] += randint(10, 50) if member['max_hp'] < config.MXIMUM_HP else 0
+        member['max_mp'] += randint(5, 25) if member['max_mp'] < config.MXIMUM_MP else 0
+        member['strength'] += randint(0, 2) if member['strength'] < config.MXIMUM_STATS else 0
+        member['defense'] += randint(0, 2) if member['defense'] < config.MXIMUM_STATS else 0
+        member['magic'] += randint(0, 2) if member['magic'] < config.MXIMUM_STATS else 0
+        member['skill_points'] += 2
 
-            # 50% chance learning a skill on level up
-            if choice([True, False]):
-                rank = get_member_skill_rank(member['lv'])
-                new_skill = choice(SKILL_LIST[rank])
+        # 50% chance learning a skill on level up
+        if choice([True, False]):
+            rank = get_member_skill_rank(member['lv'])
+            new_skill = choice(SKILL_LIST[rank])
 
-                # skip if member already knows this skill
-                if new_skill not in member['learned_skills']:
-                    member['learned_skills'].append(new_skill)
+            # skip if member already knows this skill
+            if new_skill not in member['learned_skills']:
+                member['learned_skills'].append(new_skill)
 
     return member
 
@@ -80,4 +88,6 @@ def get_damage(player_power, skill_power, target_defense):
     """
     Calculates the battle damage.
     """
-    return (player_power + skill_power - target_defense) / 2
+    damage = (player_power + skill_power - target_defense) / 2
+
+    return damage if damage <= config.MAXIMUM_DAMAGE else MAXIMUM_DAMAGE
