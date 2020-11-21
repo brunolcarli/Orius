@@ -50,15 +50,15 @@ class Player:
         """
         return True if self.current_hp > 0 else False
 
-    def list_skills(self):
+    def get_skills(self):
         """
-        Returns a <list> of <Skill> this player has learned.
+        Returns a <dict> of <Skill> this player has learned keyed by skill name.
         """
         return {skill.get('name'): Skill(**skill) for skill in self.learned_skills}
 
     def get_skillset(self):
         """
-        Returns a <list> of <Skill> this player setted for combat.
+        Returns a <dict> of <Skill> this player setted for combat.
         """
         return {skill.get('name'): Skill(**skill) for skill in self.skillset}
 
