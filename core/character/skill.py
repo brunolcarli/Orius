@@ -49,7 +49,7 @@ SKILL_LIST = {
         {'name': 'high voltage', 'type': 'magic', 'power': 60, 'cost': 8, 'effect': None},
         {'name': 'freeze', 'type': 'magic', 'power': 62, 'cost': 8, 'effect': None},
         {'name': 'uppercut', 'type': 'physical', 'power': 42, 'cost': 8, 'effect': None},
-        {'name': 'armlock', 'type': 'magic', 'power': 40, 'cost': 8, 'effect': None},
+        {'name': 'armlock', 'type': 'physical', 'power': 40, 'cost': 8, 'effect': None},
         {'name': 'toxic vapor', 'type': 'magic', 'power': 55, 'cost': 8, 'effect': None},
         {'name': 'scalp', 'type': 'physical', 'power': 45, 'cost': 8, 'effect': None},
         {'name': 'burn', 'type': 'magic', 'power': 60, 'cost': 8, 'effect': None},

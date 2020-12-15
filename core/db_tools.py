@@ -30,6 +30,7 @@ def set_base_stats(member):
 
     return member
 
+
 def get_db():
     """
     Returns a mongo client connection cursor for database defined on
@@ -58,15 +59,6 @@ def get_or_create_member(cursor):
         # If an Level attribute exists the the member has already been seted
         return member
 
-    # Define default attributes
-    # member['lv'] = 1
-    # member['max_hp'] = 200
-    # member['max_mp'] = 100
-    # member['current_hp'] = 200
-    # member['current_mp'] = 100
-    # member['strength'] = 10
-    # member['defense'] = 10
-    # member['magic'] = 10
     member = set_base_stats(member)
     member['skillset'] = []
     member['learned_skills'] = []
@@ -75,9 +67,18 @@ def get_or_create_member(cursor):
     member['kills'] = 0
     member['deaths'] = 0
     member['resets'] = []
-    # member['next_lv'] = next_lv(member['lv'])
 
     return member
+
+
+def get_members(collection_name):
+    """
+    Get all registered members from a guild.
+    param : collection_name : <str>
+    return: <pymongo.cursor.Cursor>
+    """
+    collection = get_db()[collection_name]    
+    return collection.find()
 
 
 def update_member(collection_name, member_id, data):
@@ -175,10 +176,6 @@ def reset_member(collection_name, member_id, member):
         {'member': member_id},
         member,
     )
-    print('---------------')
-    print(member)
-    print('---------------')
-    # log.info(member)
     log.info(update)
 
     return member
