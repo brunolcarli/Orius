@@ -67,9 +67,18 @@ def get_or_create_member(cursor):
     member['kills'] = 0
     member['deaths'] = 0
     member['resets'] = []
-    # member['next_lv'] = next_lv(member['lv'])
 
     return member
+
+
+def get_members(collection_name):
+    """
+    Get all registered members from a guild.
+    param : collection_name : <str>
+    return: <pymongo.cursor.Cursor>
+    """
+    collection = get_db()[collection_name]    
+    return collection.find()
 
 
 def update_member(collection_name, member_id, data):
