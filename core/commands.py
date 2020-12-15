@@ -1,3 +1,4 @@
+import time
 import logging
 import discord
 from discord.ext import commands, tasks
@@ -140,8 +141,6 @@ async def skills(ctx, arg='list'):
     skills = options[arg]
     if not skills:
         return await ctx.send('User has no skills for this option!')
-
-    # skills = '\n'.join(str(skill) for skill in skills.values())
 
     embed = discord.Embed(color=0x1E1E1E, type='rich')
     embed.set_thumbnail(url=avatar_url)
@@ -433,3 +432,49 @@ async def reset(ctx):
     log.info('Reseting member %s', user.name)
 
     return await ctx.send('Reseted succesfull!')
+
+
+@client.command(aliases=['sv', 'service', 'config', 'cfg'])
+async def service_status(ctx):
+    """
+    Show Orius Service status and configurations.
+    """
+    heal_time = time.gmtime(config.HEAL_TIME)
+    embed = discord.Embed(color=0x1E1E1E, type='rich')
+    embed.add_field(
+        name=':small_blue_diamond: Version',
+        value=__version__,
+        inline=True
+    )
+    embed.add_field(
+        name=':fleur_de_lis: Discord Guilds count',
+        value=len(ctx.bot.guilds),
+        inline=False
+    )
+    embed.add_field(
+        name=':scales: EXP Factor',
+        value=f'x{config.EXP_FACTOR}',
+        inline=True
+    )
+    embed.add_field(
+        name=':adhesive_bandage: Healing time',
+        value=f'{heal_time.tm_hour}:{heal_time.tm_min}:{heal_time.tm_sec}',
+        inline=True
+    )
+    embed.add_field(
+        name=':sparkles: Healing Factor',
+        value=f'{int(config.HEAL_BUFF * 100)}%',
+        inline=True
+    )
+    embed.add_field(
+        name=':shinto_shrine: This Guild',
+        value=ctx.guild.name,
+        inline=True
+    )
+    embed.add_field(
+        name=':family_mwg: Guild members registered',
+        value=get_members(str(ctx.guild.id)).count(),
+        inline=True
+    )
+
+    return await ctx.send(':gear: Showing service info! :gear:', embed=embed)    
