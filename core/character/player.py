@@ -102,7 +102,8 @@ class Player:
         damage = get_damage(
             damage_base_stat[skill.type],
             skill.power,
-            defense_base_stat[skill.type]
+            defense_base_stat[skill.type],
+            self.lv
         )
 
         # the hands of destiny
