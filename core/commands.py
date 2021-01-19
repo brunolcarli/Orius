@@ -175,7 +175,10 @@ async def set_skill(ctx, *skill_name):
         None
     )
     if not skill_to_set:
-        return await ctx.send(f'Unknow skill {skill_name}')
+        return await ctx.send(
+            f'Unknow or unlearned skill {skill_name}.\n'\
+            'List your skills with `o:skills`!'
+        )
 
     skillset = member['skillset']
     if len(skillset) >= 4:
@@ -219,7 +222,10 @@ async def unset_skill(ctx, *skill_name):
         None
     )
     if not skill_to_unset:
-        return await ctx.send(f'Unknow skill {skill_name}')
+        return await ctx.send(
+            f'Unknow or unequipped skill {skill_name}.\n'\
+            'List your equipped skills with `o:skills set`!'
+        )
 
     if len(skillset) <= 1:
         return await ctx.send('You cant hold less than 1 skill.')
@@ -360,7 +366,11 @@ async def use_skill(ctx, *skill_name):
         return await ctx.send('Dead player use no skills!')
 
     if skill_name not in attacker.get_skillset().keys():
-        return await ctx.send(f'Unknow skill {skill_name}')
+        return await ctx.send(
+            f'Unknow or unequipped skill {skill_name}.\n'\
+            'List your skill set with `o:skills set`, '\
+            'list all skills with `o:skills`, equip skills with `o:set skill_name`.'
+        )
 
     member_atb = ATB.get(make_atb_key(ctx.message.guild.id, user.id))
     if member_atb:
