@@ -486,5 +486,15 @@ async def service_status(ctx):
         value=get_members(str(ctx.guild.id)).count(),
         inline=True
     )
+    embed.add_field(
+        name=':notebook: Docs',
+        value='`https://github.com/brunolcarli/Orius/wiki`',
+        inline=True
+    )
+    embed.add_field(
+        name=':notebook: Docs',
+        value='`https://github.com/brunolcarli/Orius/wiki`',
+        inline=True
+    )
 
     return await ctx.send(':gear: Showing service info! :gear:', embed=embed)    
