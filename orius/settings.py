@@ -26,7 +26,7 @@ class GameConfig:
     MAXIMUM_STATS = 999
     MAXIMUM_RESETS = 999
     MAXIMUM_LV = 100
-    MAXIMUM_DAMAGE = 999
+    MAXIMUM_DAMAGE = 9999
 
     # internal mechanics
     EXP_FACTOR = int(os.environ.get('EXP_FACTOR', 1))
