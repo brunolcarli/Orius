@@ -40,7 +40,7 @@ class HealingWave(commands.Cog):
                 except:
                     log.error('Failed to heal member %s', str(member))
 
-                update_member(str(guild.id), str(member['member']), data=member)
+                update_member(str(guild.id), str(member), data=member)
 
 
 @client.event
