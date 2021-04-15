@@ -37,10 +37,10 @@ class HealingWave(commands.Cog):
                     member['current_mp'] += member['max_mp'] * config.HEAL_BUFF
                     if member['current_mp'] > member['max_mp']:
                         member['current_mp'] = member['max_mp']
-                except:
-                    log.error('Failed to heal member %s', str(member))
 
-                update_member(str(guild.id), str(member), data=member)
+                    update_member(str(guild.id), str(member), data=member)
+                except:
+                    log.error('Failed to a heal member')
 
 
 @client.event
