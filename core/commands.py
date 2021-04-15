@@ -29,13 +29,16 @@ class HealingWave(commands.Cog):
             members = get_members(str(guild.id))
 
             for member in members:
-                member['current_hp'] += member['max_hp'] * config.HEAL_BUFF
-                if member['current_hp'] > member['max_hp']:
-                    member['current_hp'] = member['max_hp']
+                try:
+                    member['current_hp'] += member['max_hp'] * config.HEAL_BUFF
+                    if member['current_hp'] > member['max_hp']:
+                        member['current_hp'] = member['max_hp']
 
-                member['current_mp'] += member['max_mp'] * config.HEAL_BUFF
-                if member['current_mp'] > member['max_mp']:
-                    member['current_mp'] = member['max_mp']
+                    member['current_mp'] += member['max_mp'] * config.HEAL_BUFF
+                    if member['current_mp'] > member['max_mp']:
+                        member['current_mp'] = member['max_mp']
+                except:
+                    log.error('Failed to heal member %s', member['member'])
 
                 update_member(str(guild.id), str(member['member']), data=member)
 
