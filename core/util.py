@@ -106,4 +106,4 @@ def get_damage(player_power, skill_power, target_defense, lv):
     if damage <= 0:
         damage = 1
 
-    return damage if damage <= config.MAXIMUM_DAMAGE else MAXIMUM_DAMAGE
+    return damage if damage <= config.MAXIMUM_DAMAGE else config.MAXIMUM_DAMAGE
