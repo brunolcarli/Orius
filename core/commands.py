@@ -38,7 +38,7 @@ class HealingWave(commands.Cog):
                     if member['current_mp'] > member['max_mp']:
                         member['current_mp'] = member['max_mp']
 
-                    update_member(str(guild.id), str(member), data=member)
+                    update_member(str(guild.id), str(member['member']), data=member)
                 except:
                     log.error('Failed to a heal member')
 
