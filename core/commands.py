@@ -295,7 +295,6 @@ async def add_stat(ctx, stat=None, value=''):
         if member[stat] > config.MAXIMUM_HP:
             member[stat] = config.MAXIMUM_HP
 
-
     elif stat == 'mp':
         stat = 'max_mp'
         if member[stat] == config.MAXIMUM_MP:
@@ -357,6 +356,9 @@ async def use_skill(ctx, *skill_name):
     target_member = next(get_member(str(ctx.message.guild.id), str(target.id)), None)
     if not target_member:
         return await ctx.send('Target not found on database.')
+
+    if user.id == target.id:
+        return await ctx.send('You cant attack yourself!')
 
     attacker = Player(**member, name=user.name)
     defender = Player(**target_member, name=target.name)
@@ -496,3 +498,8 @@ async def service_status(ctx):
     )
 
     return await ctx.send(':gear: Showing service info! :gear:', embed=embed)    
+
+
+@client.command(aliases=['sm'])
+async def summon(ctx, *enemy_name):
+    pass
