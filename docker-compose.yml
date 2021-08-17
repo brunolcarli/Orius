@@ -5,7 +5,7 @@ services:
     image: mongo
     restart: always
     logging:
-        drive: none
+        driver: none
     env_file: orius/environment/orius_env
     networks:
       - app-tier
