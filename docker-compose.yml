@@ -11,6 +11,7 @@ services:
       - app-tier
     volumes:
       - ./mongo:/docker-entrypoint-initdb.d
+      - logs:/var/log/mongodb/
 
   orius:
     build: .
@@ -29,6 +30,16 @@ services:
       - .:/app
       - mongodbdata:/data/db
 
+  rmlog:
+    image: orius:devel
+    restart: on-failure
+    container_name: orius_rmlog
+    command: "./daemons/rmlog /var/log/mongodb/"
+    depends_on:
+      - mongo
+    volumes:
+      - logs:/var/log/mongodb/
+
 networks:
   app-tier:
     driver: bridge
@@ -37,3 +48,4 @@ networks:
 volumes:
   static_data:
   mongodbdata:
+  logs:

@@ -1,0 +1,67 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+Remove logs of a directory.
+"""
+
+import os
+from argparse import ArgumentParser
+from datetime import datetime, timedelta
+from time import sleep
+
+rmlog = ArgumentParser(
+    description='Remove logs of a specified directory!',
+)
+rmlog.add_argument(
+    'path',
+    type=str,
+    help='Directory path to clean. E.g: /home/myuser/mydir/',
+)
+rmlog.add_argument(
+    '--max_days',
+    '-md',
+    type=int,
+    action='store',
+    default=7,
+    help='Max number of days of the log.'
+)
+
+args = rmlog.parse_args()
+
+
+def rm_log(path: str, max_days=int) -> None:
+    """
+    Remove the logs.
+    params:
+        path: <str> :Directory path to clean. E.g: /home/myuser/mydir/
+        max_days: <int> :Max number of days of the log.
+    """
+    logs = []
+
+    if path[-1] != '/':
+        path = f'{path}/'
+    files = os.listdir(path)
+
+    for _file in files:
+        logs.append({
+            'name': _file,
+            'created': datetime.fromtimestamp(os.path.getmtime(f'{path}{_file}')),
+        })
+
+    logs = sorted(logs, key=lambda k: k['created'])
+    
+    control_date = datetime.today()
+    control_date = control_date - timedelta(days=max_days)
+    control_date = control_date.replace(hour=23, minute=59, second=59)
+
+    for _file in logs:
+        if _file['created'] <= control_date:
+            os.remove(f'{path}{_file["name"]}')
+            print(f'{datetime.today().isoformat()} - Removed file {path}{_file["name"]}')
+
+
+if __name__ == '__main__':
+    while True:
+        rm_log(args.path, args.max_days)
+        sleep(86400)  # Sleep by 24 hours.
