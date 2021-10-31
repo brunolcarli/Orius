@@ -107,3 +107,10 @@ def get_damage(player_power, skill_power, target_defense, lv):
         damage = 1
 
     return damage if damage <= config.MAXIMUM_DAMAGE else config.MAXIMUM_DAMAGE
+
+
+def get_member_id(server_id, author_id):
+    return f'{server_id}:{author_id}'
+
+def condition(column, value, operator='='):
+    return {'column': column, 'operator': operator, 'value': value}
