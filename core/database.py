@@ -32,7 +32,7 @@ class DBQueries:
             skill_points INT DEFAULT 0,
             kills INT DEFAULT 0,
             deaths INT DEFAULT 0,
-            resets INT DEFAULT 0,
+            resets TEXT,
             next_lv INT DEFAULT 1,
             skillset TEXT,
             learned_skills TEXT,
@@ -42,8 +42,37 @@ class DBQueries:
         return query
 
     @staticmethod
+    def create_skill_table():
+        query = '''
+        CREATE TABLE Skill (
+            skill_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+            name VARCHAR(100) UNIQUE NOT NULL,
+            type VARCHAR(8) NOT NULL,
+            power INT NOT NULL,
+            cost INT,
+            effect TEXT,
+            skill_rank VARCHAR(8)
+        )
+        '''
+        return query
+
+    @staticmethod
     def insert_player(member_id):
         return f"INSERT INTO Player (member_id) VALUES ('{member_id}')"
+
+    @staticmethod
+    def insert_skill(skill_data, skill_rank='basic'):
+        name = skill_data.get('name')
+        skill_type = skill_data.get('type')
+        power = skill_data.get('power')
+        cost = skill_data.get('cost')
+        effect = skill_data.get('effect')
+        query =  f"""
+        INSERT INTO Skill
+        (name, type, power, cost, effect, rank)
+        VALUES ('{name}', '{skill_type}', {power}, {cost}, '{effect}', '{skill_rank}')
+        """
+        return query
 
     @staticmethod
     def select_player(where=None):
@@ -57,13 +86,24 @@ class DBQueries:
         return f'SELECT * FROM Player WHERE {condition}'
 
     @staticmethod
+    def select_skill(where=None):
+        if not where:
+            return 'SELECT * FROM Skill'
+
+        column, value = where.get('column'), where.get('value')
+        operator = where.get('operator')
+        condition = f'{column} {operator} {value}'
+
+        return f'SELECT * FROM Skill WHERE {condition}'
+
+    @staticmethod
     def update_player(player_id, data):
         query = f'''
         UPDATE Player
         SET 
         '''
         for field, value in data.items():
-            query += f'{field}={value},'
+            query += f' {field}={value},'
 
         # remove the last comma (,)
         query = query[:-1]
@@ -167,3 +207,20 @@ def init_db():
     for statement in script:
         execute_query(con, statement)
     print('Database and tables created!')
+
+
+def get_or_create_player(member_id):
+    condition = {'column': 'member_id', 'operator': '=', 'value': f"'{member_id}'"}
+    query = DBQueries.select_player(where=condition)
+
+    con = create_db_connection()
+    result = read_query(con, query)
+
+    if result:  # return the existent
+        return next(iter(result))
+
+    # object does not exist: create new
+    query = DBQueries.insert_player(member_id)
+    execute_query(con, query)
+
+    return get_or_create_player(member_id)
