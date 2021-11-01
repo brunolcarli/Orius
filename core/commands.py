@@ -246,7 +246,7 @@ async def unset_skill(ctx, *skill_name):
 @client.command(aliases=['add', 'addst'])
 async def add_stat(ctx, stat=None, value=''):
     """
-    Increment an attribut stat spending your available skill points!
+    Increment an attribute stat spending your available skill points!
     An attribute and a value must be specified.
         -> Example: o:add_stat magic 1
     """
@@ -268,59 +268,54 @@ async def add_stat(ctx, stat=None, value=''):
             \nValid stats are {" ".join(f"`{s}`" for s in list(valid_stats))}'
         )
 
-    # get member from database
     user = ctx.message.author
-    member = next(get_member(str(ctx.message.guild.id), str(user.id)), None)
-    if not member:
+    guild = ctx.message.guild
+
+    try:
+        player = Player(user.name, get_member_id(guild.id, user.id))
+    except:
         return await ctx.send('Member not found!')
 
     # member must have skill points AND the value specified
-    skill_points = member.get('skill_points')
+    skill_points = player.skill_points
     if not skill_points or value > skill_points:
         return await ctx.send('Not enough skill points.')
 
     # update member stats
     if stat == 'hp':
         stat = 'max_hp'
-        if member[stat] == config.MAXIMUM_HP:
+        if player.max_hp == config.MAXIMUM_HP:
             return await ctx.send('HP is already maximized!')
 
-        member['skill_points'] -= value
+        player.skill_points -= value
         value = value *10
-        member[stat] += value
-        if member[stat] > config.MAXIMUM_HP:
-            member[stat] = config.MAXIMUM_HP
+        player.max_hp += value
+        if player.max_hp > config.MAXIMUM_HP:
+            player.max_hp = config.MAXIMUM_HP
 
     elif stat == 'mp':
         stat = 'max_mp'
-        if member[stat] == config.MAXIMUM_MP:
+        if player.max_mp == config.MAXIMUM_MP:
             return await ctx.send('MP is already maximized!')
 
-        member['skill_points'] -= value
+        player.skill_points -= value
         value = value * 10
-        member[stat] += value
-        if member[stat] > config.MAXIMUM_MP:
-            member[stat] = config.MAXIMUM_MP
+        player.max_mp += value
+        if player.max_mp > config.MAXIMUM_MP:
+            player.max_mp = config.MAXIMUM_MP
 
     else:    
-        if member[stat] == config.MAXIMUM_STATS:
+        if player.__getattribute__(stat) == config.MAXIMUM_STATS:
             return await ctx.send('This stat is already maximized!')
 
-        member[stat] += value
-        member['skill_points'] -= value
-        if member[stat] > config.MAXIMUM_STATS:
-            member[stat] = config.MAXIMUM_STATS
-
-
-    update = update_member(
-        collection_name=str(ctx.message.guild.id),
-        member_id=str(user.id),
-        data=member
-    )
-    log.info(update_member)
+        player.__setattr__(stat, player.__getattribute__(stat) + value)
+        player.skill_points -= value
+        if player.__getattribute__(stat) > config.MAXIMUM_STATS:
+            player.__setattr__(stat, config.MAXIMUM_STATS)
+    player.save()
 
     return await ctx.send(
-        f'Updated {stat} in {value}!\nSkill points left: {member["skill_points"]}'
+        f'Updated {stat} in {value}!\nSkill points left: {player.skill_points}'
     )
 
 
