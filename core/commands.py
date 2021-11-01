@@ -465,14 +465,9 @@ async def service_status(ctx):
     return await ctx.send(':gear: Showing service info! :gear:', embed=embed)    
 
 
-@client.command(aliases=['sm'])
-async def summon(ctx, *enemy_name):
-    pass
-
-
-@client.command()
-async def foo(ctx):
-    member_id = get_member_id(ctx.guild.id, ctx.author.id)
-    player = Player('baz', member_id)
-    player.get_skills()
-    return await ctx.send('foo')
+# @client.command(aliases=['sm'])
+# async def summon(ctx, *enemy_name):
+#     """
+#     Not implemented
+#     """
+#     pass
