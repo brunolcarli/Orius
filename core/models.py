@@ -9,16 +9,17 @@ from core.util import get_damage, roll_d20, condition
 class Player:
     """
     A player class is a represenation of a character, member or user.
-    This class is cast over a mongo document, json or dict similiar structure
-    to construct an object with a player behavior, so it can view status,
-    skills and battle actions.
-
-    The param : **attributes** is a duck typing implementation that, as
-    mentioned before, expects a dict like object to init its self attributes.
+    This class is cast over a mysql row structure to construct an object with a
+    player behavior, so it can view status, skills and battle actions.
     """
-    def __init__(self, name, member_id):
-        # resolve from db
-        user = get_or_create_player(member_id)
+    def __init__(self, name, member_id, data=None):
+        if not data:
+            # resolve from db
+            user = get_or_create_player(member_id, member_id.split(':')[0])
+        else:
+            # resolve from param
+            user = data
+
         resets = '[]' if not user[13] else user[13]
         skillset = '[]' if not user[15] else user[15]
         learned_skills = '[]' if not user[16] else user[16]
@@ -78,6 +79,9 @@ class Player:
         """
         skills =  [Skill(i) for i in convert(self.skillset)]
         return {skill.name: skill for skill in skills}
+
+    def get_resets(self):
+        return len(convert(self.resets))
 
     def hit(self, damage):
         """
@@ -177,7 +181,7 @@ class Player:
             'resets': self.resets,
             'next_lv': self.next_lv,
             'skillset': self.skillset,
-            'learned_skills': self.get_skills(),
+            'learned_skills': self.learned_skills,
             'exp': self.messages
         }
         return data
@@ -197,6 +201,11 @@ class Player:
 
         else:
             return 'master'
+
+    def exp_up(self, factor=1):
+        self.messages += factor
+        self.save()
+
 
 
 class Skill:
