@@ -206,6 +206,21 @@ class Player:
         self.messages += factor
         self.save()
 
+    def set_skill(self, skill):
+        skills = convert(self.learned_skills)
+        skillset = convert(self.skillset)
+
+        skillset.append(skill.skill_id)
+        self.skillset = str(skillset)
+        self.save()
+
+    def unset_skill(self, skill):
+        skills = convert(self.learned_skills)
+        skillset = convert(self.skillset)
+
+        skillset.pop(skillset.index(skill.skill_id))
+        self.skillset = str(skillset)
+        self.save()
 
 
 class Skill:
@@ -219,7 +234,7 @@ class Skill:
             None
         )
         # TODO raise exception if not skill
-
+        self.skill_id = skill[0]
         self.name = skill[1]
         self.type = skill[2]
         self.power = skill[3]

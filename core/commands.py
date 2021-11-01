@@ -170,14 +170,17 @@ async def set_skill(ctx, *skill_name):
 
     skill_name = ' '.join(token for token in skill_name)
     user = ctx.message.author
-    member = next(get_member(str(ctx.message.guild.id), str(user.id)))
-    if not member:
+    guild = ctx.message.guild
+
+    try:
+        player = Player(user.name, get_member_id(guild.id, user.id))
+    except:
         return await ctx.send('Member not found!')
 
-    # Player must have the skill before ssign it
-    skills = member['learned_skills']
+    # Player must have the skill before assign it
+    skills = player.get_skills()
     skill_to_set = next(
-        iter([skill for skill in skills if skill.get('name') == skill_name]),
+        iter([skill for skill in skills.values() if skill.name == skill_name]),
         None
     )
     if not skill_to_set:
@@ -186,20 +189,15 @@ async def set_skill(ctx, *skill_name):
             'List your skills with `o:skills`!'
         )
 
-    skillset = member['skillset']
+    skillset = player.get_skillset()
     if len(skillset) >= 4:
         return await ctx.send('You can only hold up to 4 skills at once.')
 
     # Cant assign same skill twice
-    if any([skill for skill in skillset if skill.get('name') == skill_name]):
+    if any([skill for skill in skillset.values() if skill.name == skill_name]):
         return await ctx.send('This skill is already assigned!')
 
-    member['skillset'].append(skill_to_set)
-    update = update_member(
-        collection_name=str(ctx.message.guild.id),
-        member_id=str(user.id),
-        data=member
-    )
+    player.set_skill(skill_to_set)
     log.info(update_member)
 
     return await ctx.send(f'Assigned skill {skill_name} to the skillset!')
@@ -217,14 +215,17 @@ async def unset_skill(ctx, *skill_name):
 
     skill_name = ' '.join(token for token in skill_name)
     user = ctx.message.author
-    member = next(get_member(str(ctx.message.guild.id), str(user.id)))
-    if not member:
+    guild = ctx.message.guild
+
+    try:
+        player = Player(user.name, get_member_id(guild.id, user.id))
+    except:
         return await ctx.send('Member not found!')
 
-    # Player must have the skill before ssign it
-    skillset = member['skillset']
+    # Player must have the skill before assign it
+    skillset = player.get_skillset()
     skill_to_unset = next(
-        iter([skill for skill in skillset if skill.get('name') == skill_name]),
+        iter([skill for skill in skillset.values() if skill.name == skill_name]),
         None
     )
     if not skill_to_unset:
@@ -236,18 +237,10 @@ async def unset_skill(ctx, *skill_name):
     if len(skillset) <= 1:
         return await ctx.send('You cant hold less than 1 skill.')
 
-    for skill in member['skillset']:
-        if skill['name'] == skill_name:
-            member['skillset'].remove(skill)
-
-    update = update_member(
-        collection_name=str(ctx.message.guild.id),
-        member_id=str(user.id),
-        data=member
-    )
-    log.info(update_member)
-
-    return await ctx.send(f'Unassigned skill {skill_name} to the skillset!')
+    for skill in skillset.values():
+        if skill.name == skill_name:
+            player.unset_skill(skill)
+            return await ctx.send(f'Unassigned skill {skill_name} to the skillset!')
 
 
 @client.command(aliases=['add', 'addst'])
