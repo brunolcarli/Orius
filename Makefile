@@ -8,3 +8,6 @@ run:
 container:
 	docker-compose build
 	docker-compose up
+
+migrate:
+	python3 -c 'from core.database import init_db; init_db()'
