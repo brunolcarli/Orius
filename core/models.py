@@ -1,9 +1,10 @@
 import json
 from ast import literal_eval as convert
-from random import randint, random
+from random import randint, random, choice
+from orius.settings import GameConfig as config
 from core.database import (create_db_connection, execute_query,
                            get_or_create_player, read_query, DBQueries)
-from core.util import get_damage, roll_d20, condition, set_base_stats
+from core.util import get_damage, roll_d20, condition, set_base_stats, next_lv
 
 
 class Player:
@@ -206,7 +207,62 @@ class Player:
 
     def exp_up(self, factor=1):
         self.messages += factor
+
+        if self.messages >= self.next_lv:
+            self.lv_up()
+
         self.save()
+
+    def lv_up(self):
+        """
+        Levels up a member, if possible.
+        """
+        while self.messages >= self.next_lv and self.lv < config.MAXIMUM_LV:
+            self.lv += 1
+            self.next_lv = next_lv(self.lv)
+
+            self.max_hp += randint(10, 50)
+            self.max_mp += randint(5, 25)
+            self.strength += randint(0, 2)
+            self.defense += randint(0, 2)
+            self.magic += randint(0, 2)
+            self.skill_points += 2
+
+            #pply  maximum restrictions
+            if self.max_hp > config.MAXIMUM_HP:
+                self.max_hp = config.MAXIMUM_HP
+
+            if self.max_mp > config.MAXIMUM_MP:
+                self.max_mp = config.MAXIMUM_MP
+
+            if self.strength > config.MAXIMUM_STATS:
+                self.strength = config.MAXIMUM_STATS
+
+            if self.magic > config.MAXIMUM_STATS:
+                self.magic = config.MAXIMUM_STATS
+
+            if self.defense > config.MAXIMUM_STATS:
+                self.defense = config.MAXIMUM_STATS
+
+            # 50% chance learning a skill on level up
+
+            if choice([True, False]):
+                skills_data = read_query(
+                    create_db_connection(),
+                    DBQueries.select_skill(
+                        condition('skill_rank', self.get_skill_rank())
+                    )
+                )
+                new_skill = choice([s[0] for s in skills_data])
+                skills = convert(self.learned_skills)
+
+                # skip if member already knows this skill
+                if new_skill not in skills:
+                    skills.append(new_skill)
+                    self.learned_skills = str(skills)
+
+        self.save()
+        return self
 
     def set_skill(self, skill):
         skills = convert(self.learned_skills)
@@ -242,6 +298,7 @@ class Player:
         player = set_base_stats(self)
 
         return player
+
 
 class Skill:
     def __init__(self, reference, resolver='skill_id'):

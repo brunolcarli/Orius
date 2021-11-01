@@ -94,7 +94,11 @@ class DBQueries:
 
         column, value = where.get('column'), where.get('value')
         operator = where.get('operator')
-        condition = f'{column} {operator} {value}'
+        varchars = {'name', 'type', 'effect', 'skill_rank'}
+        if column in varchars:
+            condition = condition = f"{column} {operator} '{value}'"
+        else:
+            condition = f'{column} {operator} {value}'
 
         return f'SELECT * FROM Skill WHERE {condition}'
 
