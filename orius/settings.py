@@ -22,6 +22,7 @@ MYSQL_CONFIG = {
     'MYSQL_DATABASE': os.environ.get('MYSQL_DATABASE', 'orius'),
     'MYSQL_ROOT_PASSWORD': os.environ.get('MYSQL_ROOT_PASSWORD', '')
 }
+SKILL_REGISTRATION_FILE = 'orius/skills.json'
 
 
 class GameConfig:
