@@ -453,7 +453,7 @@ async def service_status(ctx):
     )
     embed.add_field(
         name=':family_mwg: Guild members registered',
-        value=get_members(str(ctx.guild.id)).count(),
+        value=len(get_members(ctx.guild.id)),
         inline=True
     )
     embed.add_field(
