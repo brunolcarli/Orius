@@ -4,9 +4,10 @@ import discord
 from discord.ext import commands, tasks
 from orius.settings import __version__
 from orius.settings import GameConfig as config
-from core.util import make_atb_key
+from core.util import make_atb_key, get_member_id
 from core.db_tools import update_member, get_member, NotFoundOnDb, get_members, ATB, reset_member
-from core.character.player import Player
+from core.models import Player
+
 
 client = commands.Bot(command_prefix='o:')
 log = logging.getLogger()
@@ -26,19 +27,19 @@ class HealingWave(commands.Cog):
         log.info('healing servers...')
         for guild in self.guilds:
             log.info(guild.name)
-            members = get_members(str(guild.id))
+            members = get_members(guild.id)
 
             for member in members:
                 try:
-                    member['current_hp'] += member['max_hp'] * config.HEAL_BUFF
-                    if member['current_hp'] > member['max_hp']:
-                        member['current_hp'] = member['max_hp']
+                    member.current_hp += member.max_hp * config.HEAL_BUFF
+                    if member.current_hp > member.max_hp:
+                        member.current_hp = member.max_hp
 
-                    member['current_mp'] += member['max_mp'] * config.HEAL_BUFF
-                    if member['current_mp'] > member['max_mp']:
-                        member['current_mp'] = member['max_mp']
+                    member.current_mp += member.max_mp * config.HEAL_BUFF
+                    if member.current_mp > member.max_mp:
+                        member.current_mp = member.max_mp
 
-                    update_member(str(guild.id), str(member['member']), data=member)
+                    member.save()
                 except:
                     log.error('Failed to a heal member')
 
@@ -76,12 +77,13 @@ async def on_message(message):
     await client.process_commands(message)
 
     # Increments member message count
-    update = update_member(
-        collection_name=str(message.guild.id),
-        member_id=str(message.author.id),
-        data={'$inc': {'messages': config.EXP_FACTOR}}
+    player = Player(
+        message.author.name,
+        get_member_id(message.guild.id, message.author.id)
     )
-    log.info(update)
+    player.exp_up(config.EXP_FACTOR)
+
+    log.info('Updated member %s on %s', player.name, message.guild.id)
 
 
 @client.command(aliases=['st'])
@@ -90,15 +92,16 @@ async def status(ctx):
     Returns a member stats borad.
     """
     user = ctx.message.author
+    guild = ctx.message.guild
     avatar_url = f'{ctx.message.author.avatar_url.BASE}/avatars/{user.id}/{user.avatar}'
     embed = discord.Embed(color=0x1E1E1E, type='rich')
     embed.set_thumbnail(url=avatar_url)
 
-    member = next(get_member(str(ctx.message.guild.id), str(user.id)))
-    if not member:
+    try:
+        player = Player(user.name, get_member_id(guild.id, user.id))
+    except:
         return await ctx.send('Member not found!')
 
-    player = Player(**member, name=user.name)
     embed.add_field(name='Name', value=player.name, inline=False)
     embed.add_field(name='Lv', value=player.lv, inline=True)
     embed.add_field(name='HP', value=f'{int(player.current_hp)}/{player.max_hp}', inline=True)
@@ -110,8 +113,7 @@ async def status(ctx):
     embed.add_field(name='Skill pts', value=player.skill_points, inline=True)
     embed.add_field(name='KOs', value=f':skull_crossbones:  {player.kills}', inline=True)
     embed.add_field(name='KOed', value=f':cross: {player.deaths}', inline=True)
-    resets = len(player.resets) if isinstance(player.resets, list) else player.resets
-    embed.add_field(name='Resets', value=f':arrows_counterclockwise: {resets}', inline=True)
+    embed.add_field(name='Resets', value=f':arrows_counterclockwise: {player.get_resets()}', inline=True)
 
     return await ctx.send('', embed=embed)
 
@@ -503,3 +505,11 @@ async def service_status(ctx):
 @client.command(aliases=['sm'])
 async def summon(ctx, *enemy_name):
     pass
+
+
+@client.command()
+async def foo(ctx):
+    member_id = get_member_id(ctx.guild.id, ctx.author.id)
+    player = Player('baz', member_id)
+    player.get_skills()
+    return await ctx.send('foo')
