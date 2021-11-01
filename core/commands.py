@@ -338,25 +338,26 @@ async def use_skill(ctx, *skill_name):
 
     # get user from database
     user = ctx.message.author
-    member = next(get_member(str(ctx.message.guild.id), str(user.id)))
-    if not member:
+    guild = ctx.message.guild
+
+    try:
+        attacker = Player(user.name, get_member_id(guild.id, user.id))
+    except:
         return await ctx.send('Member not found!')
 
-    # get target from databse
+    # get target from database
     target = mentions[0]
-    target_member = next(get_member(str(ctx.message.guild.id), str(target.id)), None)
-    if not target_member:
-        return await ctx.send('Target not found on database.')
+    try:
+        defender = Player(target.name, get_member_id(guild.id, target.id))
+    except:
+        return await ctx.send('Target member not found!')
 
     if user.id == target.id:
         return await ctx.send('You cant attack yourself!')
 
-    attacker = Player(**member, name=user.name)
-    defender = Player(**target_member, name=target.name)
-
     # Check battle possibilities
     if not defender.is_alive():
-        return await ctx.send('Cant attack dead player!')
+        return await ctx.send('Cannot attack dead player!')
 
     if not attacker.is_alive():
         return await ctx.send('Dead player use no skills!')
@@ -368,7 +369,7 @@ async def use_skill(ctx, *skill_name):
             'list all skills with `o:skills`, equip skills with `o:set skill_name`.'
         )
 
-    member_atb = ATB.get(make_atb_key(ctx.message.guild.id, user.id))
+    member_atb = ATB.get(make_atb_key(guild.id, user.id))
     if member_atb:
         return await ctx.send('You have to wait 10s before next movement!') 
 
@@ -377,36 +378,10 @@ async def use_skill(ctx, *skill_name):
         attacker.get_skillset()[skill_name],
         defender
     )
-
-    # updates defender data on database
-    target_member['current_hp'] = defender.current_hp
-    target_member['deaths'] = defender.deaths
-    target_member.pop('_id', None)
-    update_defender = update_member(
-        collection_name=str(ctx.message.guild.id),
-        member_id=str(target.id),
-        data=target_member
-    )
-    log.info(update_defender)
-
-    # updates attacker data on database
-    member['current_mp'] = attacker.current_mp
-    member['kills'] = attacker.kills
-    member.pop('_id', None)
-
-    # earn exp on defeating a player
-    if not combat['target_alive']:
-        member['messages'] += target_member.get('lv', 5) * (config.EXP_FACTOR + 1)
-
-    update_attacker = update_member(
-        collection_name=str(ctx.message.guild.id),
-        member_id=str(user.id),
-        data=member
-    )
-    log.info(update_attacker)
-
+    attacker.save()
+    defender.save()
     # next combat action have to wait 10 seconds
-    ATB[make_atb_key(ctx.message.guild.id, user.id)] = True
+    ATB[make_atb_key(guild.id, user.id)] = True
 
     return await ctx.send(combat['log'])
 

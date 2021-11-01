@@ -162,7 +162,9 @@ class Player:
         return {
             'hit': True,
             'target_alive': target.is_alive(),
-            'log': log_msg
+            'log': log_msg,
+            'attacker': self,
+            'defender': target
         }
 
     def get_attributes_data(self):
