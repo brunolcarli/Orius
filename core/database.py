@@ -1,6 +1,7 @@
+import json
 import mysql.connector
 from mysql.connector import Error
-from orius.settings import MYSQL_CONFIG
+from orius.settings import MYSQL_CONFIG, SKILL_REGISTRATION_FILE
 
 
 class DBQueries:
@@ -36,7 +37,8 @@ class DBQueries:
             next_lv INT DEFAULT 1,
             skillset TEXT,
             learned_skills TEXT,
-            exp INT DEFAULT 0
+            exp INT DEFAULT 0,
+            guild VARCHAR(255)
         )
         '''
         return query
@@ -57,8 +59,8 @@ class DBQueries:
         return query
 
     @staticmethod
-    def insert_player(member_id):
-        return f"INSERT INTO Player (member_id) VALUES ('{member_id}')"
+    def insert_player(member_id, guild_id):
+        return f"INSERT INTO Player (member_id, guild) VALUES ('{member_id}', '{guild_id}')"
 
     @staticmethod
     def insert_skill(skill_data, skill_rank='basic'):
@@ -69,7 +71,7 @@ class DBQueries:
         effect = skill_data.get('effect')
         query =  f"""
         INSERT INTO Skill
-        (name, type, power, cost, effect, rank)
+        (name, type, power, cost, effect, skill_rank)
         VALUES ('{name}', '{skill_type}', {power}, {cost}, '{effect}', '{skill_rank}')
         """
         return query
@@ -98,12 +100,13 @@ class DBQueries:
 
     @staticmethod
     def update_player(player_id, data):
-        query = f'''
-        UPDATE Player
-        SET 
-        '''
+        query = 'UPDATE Player SET '
+        varchars = {'resets', 'learned_skills', 'skillset'}
         for field, value in data.items():
-            query += f' {field}={value},'
+            if field in varchars:
+                query += f" {field}='{value}',"
+            else:
+                query += f' {field}={value},'
 
         # remove the last comma (,)
         query = query[:-1]
@@ -196,20 +199,37 @@ def init_db():
     Creates the schema and tables.
     *Run this function only in the first execution of the system*
     """
+    try:
+        with open(SKILL_REGISTRATION_FILE, 'r') as data:
+            skills = json.load(data)
+    except FileNotFoundError:
+        raise Exception(f'Population file not found on {SKILL_REGISTRATION_FILE}!')
+
+    if not skills:
+        raise Exception('No skill found on population file!')
+
     con = db_connection()
 
     # Creates main schema and tables
     script = (
         DBQueries.create_schema(MYSQL_CONFIG['MYSQL_DATABASE']),
         DBQueries.use_schema(MYSQL_CONFIG['MYSQL_DATABASE']),
-        DBQueries.create_player_table()
+        DBQueries.create_player_table(),
+        DBQueries.create_skill_table(),
     )
     for statement in script:
         execute_query(con, statement)
     print('Database and tables created!')
 
+    # populate with known skills
+    for skill in skills:
+        print(f'Registering {skill["name"]}')
+        query = DBQueries.insert_skill(skill, skill['rank'])
+        execute_query(con, query)
+    print('Migration finished.')
 
-def get_or_create_player(member_id):
+
+def get_or_create_player(member_id, guild_id):
     condition = {'column': 'member_id', 'operator': '=', 'value': f"'{member_id}'"}
     query = DBQueries.select_player(where=condition)
 
@@ -220,7 +240,7 @@ def get_or_create_player(member_id):
         return next(iter(result))
 
     # object does not exist: create new
-    query = DBQueries.insert_player(member_id)
+    query = DBQueries.insert_player(member_id, guild_id)
     execute_query(con, query)
 
-    return get_or_create_player(member_id)
+    return get_or_create_player(member_id, guild_id)
