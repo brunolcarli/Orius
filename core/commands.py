@@ -5,7 +5,7 @@ from discord.ext import commands, tasks
 from orius.settings import __version__
 from orius.settings import GameConfig as config
 from core.util import make_atb_key, get_member_id
-from core.db_tools import update_member, get_member, NotFoundOnDb, get_members, ATB, reset_member
+from core.db_tools import update_member, get_members, ATB
 from core.models import Player
 
 
