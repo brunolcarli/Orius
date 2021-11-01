@@ -112,5 +112,27 @@ def get_damage(player_power, skill_power, target_defense, lv):
 def get_member_id(server_id, author_id):
     return f'{server_id}:{author_id}'
 
+
 def condition(column, value, operator='='):
     return {'column': column, 'operator': operator, 'value': value}
+
+
+def set_base_stats(player):
+    """
+    Sets all base stats for a member.
+    """
+    player.lv = 1
+    player.max_hp = 200
+    player.max_mp = 100
+    player.current_hp = 200
+    player.current_mp = 100
+    player.strength = 10
+    player.defense = 10
+    player.magic = 10
+    player.next_lv = next_lv(player.lv)
+    player.messages = 0
+    player.learned_skills = '[]'
+    player.skillset = '[]'
+    player.save()
+
+    return player

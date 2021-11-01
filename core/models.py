@@ -3,7 +3,7 @@ from ast import literal_eval as convert
 from random import randint, random
 from core.database import (create_db_connection, execute_query,
                            get_or_create_player, read_query, DBQueries)
-from core.util import get_damage, roll_d20, condition
+from core.util import get_damage, roll_d20, condition, set_base_stats
 
 
 class Player:
@@ -224,6 +224,24 @@ class Player:
         self.skillset = str(skillset)
         self.save()
 
+    def reset(self):
+        """
+        Resets a player to initial stats, keeping only the skill points earned
+        before.
+        """
+        # resets is a list of the last lv(s) player has reseted
+        resets = convert(self.resets)
+        resets.append(self.lv)
+
+        # calculates the amount skill points to start
+        total_sp = sum([lv*2 for lv in resets])
+        self.skill_points = total_sp
+        self.resets = str(resets)
+
+        # resets stats and skills
+        player = set_base_stats(self)
+
+        return player
 
 class Skill:
     def __init__(self, reference, resolver='skill_id'):

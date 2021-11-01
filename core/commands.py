@@ -394,22 +394,21 @@ async def reset(ctx):
     your skills. But, in exchange you keep all skill points you earned before to
     spend again the way you want on your stats.
     """
+    # get user from database
     user = ctx.message.author
-    member = next(get_member(str(ctx.message.guild.id), str(user.id)))
-    if not member:
+    guild = ctx.message.guild
+
+    try:
+        player = Player(user.name, get_member_id(guild.id, user.id))
+    except:
         return await ctx.send('Member not found!')
 
-    if member['lv'] < 50:
+    if player.lv < 50:
         return await ctx.send(
             'You are not allowed to reset yet.\n' \
             'Only players with **lv 50** or higher are allowed to reset!'
         )
-
-    member = reset_member(
-        collection_name=str(ctx.message.guild.id),
-        member_id=str(user.id),
-        member=member
-    )
+    player.reset()
     log.info('Reseting member %s', user.name)
 
     return await ctx.send('Reseted succesfull!')
