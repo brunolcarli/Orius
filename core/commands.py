@@ -127,9 +127,11 @@ async def skills(ctx, arg='list'):
     """
     valid_args = ['set', 'list']
     user = ctx.message.author
+    guild = ctx.message.guild
 
-    member = next(get_member(str(ctx.message.guild.id), str(user.id)))
-    if not member:
+    try:
+        player = Player(user.name, get_member_id(guild.id, user.id))
+    except:
         return await ctx.send('Member not found!')
 
     if arg not in valid_args:
@@ -138,7 +140,6 @@ async def skills(ctx, arg='list'):
         )
 
     avatar_url = f'{ctx.message.author.avatar_url.BASE}/avatars/{user.id}/{user.avatar}'
-    player = Player(**member, name=user.name)
     options = {
         'list': player.get_skills(),
         'set': player.get_skillset()
