@@ -1,0 +1,410 @@
+[
+    {
+        "name": "punch",
+        "type": "physical",
+        "power": 10,
+        "cost": 1,
+        "effect": null,
+        "rank": "basic"
+    },
+    {
+        "name": "kick",
+        "type": "physical",
+        "power": 20,
+        "cost": 2,
+        "effect": null,
+        "rank": "basic"
+    },
+    {
+        "name": "throw",
+        "type": "physical",
+        "power": 22,
+        "cost": 2,
+        "effect": null,
+        "rank": "basic"
+    },
+    {
+        "name": "slash",
+        "type": "physical",
+        "power": 30,
+        "cost": 3,
+        "effect": null,
+        "rank": "basic"
+    },
+    {
+        "name": "smash",
+        "type": "physical",
+        "power": 30,
+        "cost": 3,
+        "effect": null,
+        "rank": "basic"
+    },
+    {
+        "name": "headbutt",
+        "type": "physical",
+        "power": 30,
+        "cost": 3,
+        "effect": null,
+        "rank": "basic"
+    },
+    {
+        "name": "flame",
+        "type": "magic",
+        "power": 20,
+        "cost": 3,
+        "effect": null,
+        "rank": "basic"
+    },
+    {
+        "name": "shock",
+        "type": "magic",
+        "power": 20,
+        "cost": 3,
+        "effect": null,
+        "rank": "basic"
+    },
+    {
+        "name": "snowball",
+        "type": "magic",
+        "power": 20,
+        "cost": 3,
+        "effect": null,
+        "rank": "basic"
+    },
+    {
+        "name": "windcutter",
+        "type": "magic",
+        "power": 30,
+        "cost": 4,
+        "effect": null,
+        "rank": "basic"
+    },
+    {
+        "name": "hail",
+        "type": "magic",
+        "power": 30,
+        "cost": 4,
+        "effect": null,
+        "rank": "basic"
+    },
+    {
+        "name": "light sword",
+        "type": "magic",
+        "power": 35,
+        "cost": 5,
+        "effect": null,
+        "rank": "basic"
+    },
+    {
+        "name": "dark saber",
+        "type": "magic",
+        "power": 50,
+        "cost": 2,
+        "effect": null,
+        "rank": "basic"
+    },
+    {
+        "name": "super punch",
+        "type": "physical",
+        "power": 40,
+        "cost": 5,
+        "effect": null,
+        "rank": "champion"
+    },
+    {
+        "name": "high kick",
+        "type": "physical",
+        "power": 45,
+        "cost": 6,
+        "effect": null,
+        "rank": "champion"
+    },
+    {
+        "name": "suplex",
+        "type": "physical",
+        "power": 50,
+        "cost": 7,
+        "effect": null,
+        "rank": "champion"
+    },
+    {
+        "name": "hammer hand",
+        "type": "physical",
+        "power": 50,
+        "cost": 7,
+        "effect": null,
+        "rank": "champion"
+    },
+    {
+        "name": "rib breaker",
+        "type": "physical",
+        "power": 55,
+        "cost": 7,
+        "effect": null,
+        "rank": "champion"
+    },
+    {
+        "name": "fireball",
+        "type": "magic",
+        "power": 45,
+        "cost": 7,
+        "effect": null,
+        "rank": "champion"
+    },
+    {
+        "name": "gust",
+        "type": "magic",
+        "power": 45,
+        "cost": 7,
+        "effect": null,
+        "rank": "champion"
+    },
+    {
+        "name": "flush",
+        "type": "magic",
+        "power": 50,
+        "cost": 8,
+        "effect": null,
+        "rank": "champion"
+    },
+    {
+        "name": "pressure",
+        "type": "magic",
+        "power": 55,
+        "cost": 8,
+        "effect": null,
+        "rank": "champion"
+    },
+    {
+        "name": "high voltage",
+        "type": "magic",
+        "power": 60,
+        "cost": 8,
+        "effect": null,
+        "rank": "champion"
+    },
+    {
+        "name": "freeze",
+        "type": "magic",
+        "power": 62,
+        "cost": 8,
+        "effect": null,
+        "rank": "champion"
+    },
+    {
+        "name": "uppercut",
+        "type": "physical",
+        "power": 42,
+        "cost": 8,
+        "effect": null,
+        "rank": "champion"
+    },
+    {
+        "name": "armlock",
+        "type": "physical",
+        "power": 40,
+        "cost": 8,
+        "effect": null,
+        "rank": "champion"
+    },
+    {
+        "name": "toxic vapor",
+        "type": "magic",
+        "power": 55,
+        "cost": 8,
+        "effect": null,
+        "rank": "champion"
+    },
+    {
+        "name": "scalp",
+        "type": "physical",
+        "power": 45,
+        "cost": 8,
+        "effect": null,
+        "rank": "champion"
+    },
+    {
+        "name": "burn",
+        "type": "magic",
+        "power": 60,
+        "cost": 8,
+        "effect": null,
+        "rank": "champion"
+    },
+    {
+        "name": "liquid jet",
+        "type": "magic",
+        "power": 45,
+        "cost": 8,
+        "effect": null,
+        "rank": "champion"
+    },
+    {
+        "name": "light arrow",
+        "type": "magic",
+        "power": 65,
+        "cost": 10,
+        "effect": null,
+        "rank": "champion"
+    },
+    {
+        "name": "dark sworn",
+        "type": "magic",
+        "power": 78,
+        "cost": 35,
+        "effect": null,
+        "rank": "champion"
+    },
+    {
+        "name": "stone breaker",
+        "type": "physical",
+        "power": 75,
+        "cost": 15,
+        "effect": null,
+        "rank": "ultimate"
+    },
+    {
+        "name": "ground shake",
+        "type": "physical",
+        "power": 75,
+        "cost": 15,
+        "effect": null,
+        "rank": "ultimate"
+    },
+    {
+        "name": "hyper smash",
+        "type": "physical",
+        "power": 75,
+        "cost": 15,
+        "effect": null,
+        "rank": "ultimate"
+    },
+    {
+        "name": "thrust",
+        "type": "physical",
+        "power": 75,
+        "cost": 15,
+        "effect": null,
+        "rank": "ultimate"
+    },
+    {
+        "name": "sandstorm",
+        "type": "magic",
+        "power": 70,
+        "cost": 15,
+        "effect": null,
+        "rank": "ultimate"
+    },
+    {
+        "name": "hailstorm",
+        "type": "magic",
+        "power": 70,
+        "cost": 15,
+        "effect": null,
+        "rank": "ultimate"
+    },
+    {
+        "name": "tornado",
+        "type": "magic",
+        "power": 75,
+        "cost": 17,
+        "effect": null,
+        "rank": "ultimate"
+    },
+    {
+        "name": "firestorm",
+        "type": "magic",
+        "power": 80,
+        "cost": 20,
+        "effect": null,
+        "rank": "ultimate"
+    },
+    {
+        "name": "light spear",
+        "type": "magic",
+        "power": 86,
+        "cost": 18,
+        "effect": null,
+        "rank": "ultimate"
+    },
+    {
+        "name": "dark wave",
+        "type": "magic",
+        "power": 70,
+        "cost": 8,
+        "effect": null,
+        "rank": "ultimate"
+    },
+    {
+        "name": "overpush",
+        "type": "physical",
+        "power": 90,
+        "cost": 20,
+        "effect": null,
+        "rank": "master"
+    },
+    {
+        "name": "backstab",
+        "type": "physical",
+        "power": 90,
+        "cost": 20,
+        "effect": null,
+        "rank": "master"
+    },
+    {
+        "name": "head smash",
+        "type": "physical",
+        "power": 90,
+        "cost": 20,
+        "effect": null,
+        "rank": "master"
+    },
+    {
+        "name": "super nova",
+        "type": "magic",
+        "power": 90,
+        "cost": 22,
+        "effect": null,
+        "rank": "master"
+    },
+    {
+        "name": "star pulse",
+        "type": "magic",
+        "power": 90,
+        "cost": 20,
+        "effect": null,
+        "rank": "master"
+    },
+    {
+        "name": "meteor",
+        "type": "magic",
+        "power": 100,
+        "cost": 25,
+        "effect": null,
+        "rank": "master"
+    },
+    {
+        "name": "light storm",
+        "type": "magic",
+        "power": 120,
+        "cost": 30,
+        "effect": null,
+        "rank": "master"
+    },
+    {
+        "name": "dark end",
+        "type": "magic",
+        "power": 150,
+        "cost": 70,
+        "effect": null,
+        "rank": "master"
+    },
+    {
+        "name": "murder",
+        "type": "physical",
+        "power": 100,
+        "cost": 35,
+        "effect": null,
+        "rank": "master"
+    }
+]
