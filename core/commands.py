@@ -4,8 +4,8 @@ import discord
 from discord.ext import commands, tasks
 from orius.settings import __version__
 from orius.settings import GameConfig as config
-from core.util import make_atb_key, get_member_id
-from core.db_tools import update_member, get_members, ATB
+from core.util import make_atb_key, get_member_id, get_members
+from core.mechs import ATB
 from core.models import Player
 
 
@@ -27,7 +27,7 @@ class HealingWave(commands.Cog):
         log.info('healing servers...')
         for guild in self.guilds:
             log.info(guild.name)
-            members = get_members(guild.id)
+            members = [Player('', m[1], data=m) for m in get_members(guild.id)]
 
             for member in members:
                 try:
@@ -198,7 +198,7 @@ async def set_skill(ctx, *skill_name):
         return await ctx.send('This skill is already assigned!')
 
     player.set_skill(skill_to_set)
-    log.info(update_member)
+    log.info('Player %s updated skillset', user.name)
 
     return await ctx.send(f'Assigned skill {skill_name} to the skillset!')
 

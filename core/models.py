@@ -1,10 +1,14 @@
-import json
+import logging
 from ast import literal_eval as convert
 from random import randint, random, choice
 from orius.settings import GameConfig as config
 from core.database import (create_db_connection, execute_query,
                            get_or_create_player, read_query, DBQueries)
-from core.util import get_damage, roll_d20, condition, set_base_stats, next_lv
+from core.util import condition
+from core.mechs import get_damage, roll_d20, set_base_stats, next_lv
+
+
+logger = logging.getLogger(__name__)
 
 
 class Player:
@@ -158,7 +162,7 @@ class Player:
             log_msg += f'\n{target.name} was **knocked out**.'
 
         self.save()
-        print(log_msg)
+        logger.info(log_msg)
 
         return {
             'hit': True,

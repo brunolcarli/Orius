@@ -1,8 +1,11 @@
+import logging
 import json
 import mysql.connector
 from mysql.connector import Error
 from orius.settings import MYSQL_CONFIG, SKILL_REGISTRATION_FILE
 
+
+logger = logging.getLogger(__name__)
 
 class DBQueries:
     """
@@ -134,9 +137,8 @@ def db_connection(
             user=user_name,
             passwd=user_password,
         )
-        print('Database connection successful')
     except Error as err:
-        print(f"Error: '{err}'")
+        logger.error('Error: %s', str(err))
 
     return connection
 
@@ -157,9 +159,8 @@ def create_db_connection(
             passwd=user_password,
             database=db_name
         )
-        print('Database connection successful')
     except Error as err:
-        print(f"Error: '{err}'")
+        logger.error('Error: %s', str(err))
 
     return connection
 
@@ -171,9 +172,8 @@ def create_database(connection, query):
     cursor = connection.cursor()
     try:
         cursor.execute(query)
-        print('DB schema created successfully')
     except Error as err:
-        print(f"Error: '{err}'")
+        logger.error('Error: %s', str(err))
 
 
 def execute_query(connection, query):
@@ -181,9 +181,8 @@ def execute_query(connection, query):
     try:
         cursor.execute(query)
         connection.commit()
-        print('Query successful')
     except Error as err:
-        print(f"Error: '{err}'")
+        logger.error('Error: %s', str(err))
 
 
 def read_query(connection, query):
@@ -194,7 +193,7 @@ def read_query(connection, query):
         result = cursor.fetchall()
         return result
     except Error as err:
-        print(f"Error: '{err}'")
+        logger.error('Error: %s', str(err))
 
 
 def init_db():
@@ -223,14 +222,14 @@ def init_db():
     )
     for statement in script:
         execute_query(con, statement)
-    print('Database and tables created!')
+    logger.info('Database and tables created!')
 
     # populate with known skills
     for skill in skills:
-        print(f'Registering {skill["name"]}')
+        logging.info('Registering skill %s', skill["name"])
         query = DBQueries.insert_skill(skill, skill['rank'])
         execute_query(con, query)
-    print('Migration finished.')
+    logging.info('Migration finished.')
 
 
 def get_or_create_player(member_id, guild_id):

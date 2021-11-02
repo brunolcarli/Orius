@@ -7,14 +7,6 @@ __version__ = '1.4.4'
 
 TOKEN = os.environ.get('TOKEN', '')
 
-MONGO_CONFIG = {
-    'MONGO_HOST': os.environ.get('MONGO_HOST', 'mongodb://localhost'),
-    'MONGO_PORT': os.environ.get('MONGO_PORT', '27017'),
-    'MONGO_DATABASE': os.environ.get('MONGO_DATABASE'),
-    'MONGO_USER': os.environ.get('MONGO_USER'),
-    'MONGO_PASS': os.environ.get('MONGO_PASS')
-}
-
 MYSQL_CONFIG = {
     'MYSQL_HOST': os.environ.get('MYSQL_HOST', 'localhost'),
     'MYSQL_USER': os.environ.get('MYSQL_USER', 'guest'),
@@ -23,7 +15,6 @@ MYSQL_CONFIG = {
     'MYSQL_ROOT_PASSWORD': os.environ.get('MYSQL_ROOT_PASSWORD', '')
 }
 SKILL_REGISTRATION_FILE = 'orius/skills.json'
-
 
 class GameConfig:
     """
