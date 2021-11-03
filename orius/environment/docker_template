@@ -1,6 +1,7 @@
+# Create a new env file with this template adding your own variables
+
 TOKEN=your_bot_token
-MONGO_DATABASE=your_database_name
-MONGO_HOST=your_database_host
-MONGO_PORT=your_database_port
-MONGO_USER=your_database_user
-MONGO_PASS=your_database_password
+MYSQL_HOST=orius_db
+MYSQL_USER=orius
+MYSQL_PASSWORD=orius_pwd
+MYSQL_DATABASE=orius

@@ -1,14 +1,9 @@
 version: '3'
 services:
 
-  mongo:
-    image: mongo
-    restart: always
+  orius_db:
+    image: mariadb:10.3
     env_file: orius/environment/orius_env
-    networks:
-      - app-tier
-    volumes:
-      - ./mongo:/docker-entrypoint-initdb.d
 
   orius:
     build: .
@@ -16,20 +11,13 @@ services:
     restart: on-failure
     container_name: orius_container
     command: make run
-    depends_on:
-      - mongo
-    networks:
-      - app-tier
     env_file: orius/environment/orius_env
     volumes:
       - .:/app
-      - mongodbdata:/data/db
-
-networks:
-  app-tier:
-    driver: bridge
-
+      - static_data:/app/static
+    depends_on:
+      - orius_db
 
 volumes:
   static_data:
-  mongodbdata:
+
