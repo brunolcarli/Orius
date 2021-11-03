@@ -8,8 +8,6 @@ services:
   orius:
     build: .
     image: orius:devel
-    logging:
-        driver: none
     restart: on-failure
     container_name: orius_container
     command: make run
