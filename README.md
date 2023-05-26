@@ -34,9 +34,6 @@ Discord Bot for Role Playing Game such as leveling up, skill gathering and guild
 
 #### Local machine
 
-First of all you must have a instance of MongoDB running on your machine, so if you
-dont have a mongodb go to [mongo installation guide](https://docs.mongodb.com/manual/installation/) and install MongoDB.
-
 Clone this project and engage a **python3** virtual environment the way as you like and install the requirements through Makefile.
 
 Example using virtualevwrapper:
